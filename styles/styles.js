@@ -6,7 +6,7 @@ export const globalStyleVariables = {
     formBgColor: '#111133',
     fabColor: '#223333',
     buttonColor: '#223333',
-    outlineColor: '#334444'
+    outlineColor: '#334444',
 }
 
 export const globalStyles = StyleSheet.create({

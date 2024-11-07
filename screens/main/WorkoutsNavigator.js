@@ -34,7 +34,7 @@ function WorkoutsHome({ navigation }) {
         icon={{ name: 'add', color: 'white' }}
         title={"Add Workout"}
         color={globalStyleVariables.fabColor}
-        onPress={() => navigation.navigate('AddWorkout')}
+        onPress={() => navigation.navigate("AddWorkout")}
       />
     </View>
   )
@@ -43,8 +43,8 @@ function WorkoutsHome({ navigation }) {
 function WorkoutsNavigator({ navigation }) {
   return (
     <Stack.Navigator>
-      <Stack.Screen name='WorkoutsHome' component={WorkoutsHome} options={{ headerShown: false }} />
-      <Stack.Screen name='AddWorkout' component={AddWorkoutScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="WorkoutsHome" component={WorkoutsHome} options={{ headerShown: false }} />
+      <Stack.Screen name="AddWorkout" component={AddWorkoutScreen} options={{ headerShown: false }} />
     </Stack.Navigator>
   )
 }

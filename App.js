@@ -6,19 +6,34 @@ import HomeNavigator from './screens/main/HomeNavigator';
 import WorkoutsNavigator from './screens/main/WorkoutsNavigator';
 import ProgressTrackerNavigator from './screens/main/ProgressTrackerNavigator';
 import { globalStyles } from './styles/styles';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import LoginPage from './screens/authentication/Authentication';
+import Authentication from './screens/authentication/Authentication';
 
 const Drawer = createDrawerNavigator();
+const CoreStack = createNativeStackNavigator();
+
+function Authenticated() {
+  return (
+    <View style={styles.container}>
+      <Drawer.Navigator initialRouteName="Home" screenOptions={globalStyles.drawerStyles.mainDrawerStyle}>
+        <Drawer.Screen name="Home" component={HomeNavigator} options={globalStyles.drawerStyles.mainScreenOptions}
+        />
+        <Drawer.Screen name="Workouts" component={WorkoutsNavigator} options={globalStyles.drawerStyles.mainScreenOptions} />
+        <Drawer.Screen name="Progress Tracker" component={ProgressTrackerNavigator} options={globalStyles.drawerStyles.mainScreenOptions} />
+      </Drawer.Navigator>
+    </View>
+  );
+}
 
 export default function App() {
   return (
     <View style={styles.container}>
       <NavigationContainer>
-        <Drawer.Navigator initialRouteName='Home' screenOptions={globalStyles.drawerStyles.mainDrawerStyle}>
-          <Drawer.Screen name="Home" component={HomeNavigator} options={globalStyles.drawerStyles.mainScreenOptions}
-          />
-          <Drawer.Screen name="Workouts" component={WorkoutsNavigator} options={globalStyles.drawerStyles.mainScreenOptions}/>
-          <Drawer.Screen name="Progress Tracker" component={ProgressTrackerNavigator} options={globalStyles.drawerStyles.mainScreenOptions}/>
-        </Drawer.Navigator>
+        <CoreStack.Navigator screenOptions={{headerShown: false}}>
+          <CoreStack.Screen name="Authentication" component={Authentication}/>
+          <CoreStack.Screen name="Authenticated" component={Authenticated}/>
+        </CoreStack.Navigator>
       </NavigationContainer>
     </View>
   );
