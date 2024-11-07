@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { StyleSheet, View, Text, Platform } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -7,8 +7,9 @@ import WorkoutsNavigator from './screens/main/WorkoutsNavigator';
 import ProgressTrackerNavigator from './screens/main/ProgressTrackerNavigator';
 import { globalStyles } from './styles/styles';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import LoginPage from './screens/authentication/Authentication';
 import Authentication from './screens/authentication/Authentication';
+import { onAuthStateChanged } from 'firebase/auth';
+import auth from './firebase/FirebaseConfig';
 
 const Drawer = createDrawerNavigator();
 const CoreStack = createNativeStackNavigator();
@@ -27,12 +28,27 @@ function Authenticated() {
 }
 
 export default function App() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      if (user != null) console.log(user.uid);
+    })
+  }, [user])
+
   return (
     <View style={styles.container}>
       <NavigationContainer>
-        <CoreStack.Navigator screenOptions={{headerShown: false}}>
-          <CoreStack.Screen name="Authentication" component={Authentication}/>
-          <CoreStack.Screen name="Authenticated" component={Authenticated}/>
+        <CoreStack.Navigator screenOptions={{ headerShown: false }}>
+          {
+            user ?
+              (
+                <CoreStack.Screen name="Authenticated" component={Authenticated} />
+              ) : (
+                <CoreStack.Screen name="Authentication" component={Authentication} />
+              )
+          }
         </CoreStack.Navigator>
       </NavigationContainer>
     </View>
