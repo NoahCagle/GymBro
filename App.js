@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { StyleSheet, View, Text } from 'react-native';
+import { StyleSheet, View, Text, Platform } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import Home from './screens/main/Home';
-import WorkoutsScreen from './screens/main/WorkoutsScreen';
-import ProgressTrackerScreen from './screens/main/ProgressTrackerScreen';
+import HomeNavigator from './screens/main/HomeNavigator';
+import WorkoutsNavigator from './screens/main/WorkoutsNavigator';
+import ProgressTrackerNavigator from './screens/main/ProgressTrackerNavigator';
+import { globalStyles } from './styles/styles';
 
 const Drawer = createDrawerNavigator();
 
@@ -12,10 +13,11 @@ export default function App() {
   return (
     <View style={styles.container}>
       <NavigationContainer>
-        <Drawer.Navigator initialRouteName='Home'>
-          <Drawer.Screen name="Home" component={Home}/>
-          <Drawer.Screen name="Workouts" component={WorkoutsScreen}/>
-          <Drawer.Screen name="Progress Tracker" component={ProgressTrackerScreen}/>
+        <Drawer.Navigator initialRouteName='Home' screenOptions={globalStyles.drawerStyles.mainDrawerStyle}>
+          <Drawer.Screen name="Home" component={HomeNavigator} options={globalStyles.drawerStyles.mainScreenOptions}
+          />
+          <Drawer.Screen name="Workouts" component={WorkoutsNavigator} options={globalStyles.drawerStyles.mainScreenOptions}/>
+          <Drawer.Screen name="Progress Tracker" component={ProgressTrackerNavigator} options={globalStyles.drawerStyles.mainScreenOptions}/>
         </Drawer.Navigator>
       </NavigationContainer>
     </View>

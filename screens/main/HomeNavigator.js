@@ -1,13 +1,12 @@
 import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
-import { globalStyles } from '../../styles/styles'
+import createScreenTitle, { globalStyles } from '../../styles/styles'
 
-function Home() {
+function HomeNavigator() {
     return (
         <View style={globalStyles.container}>
-            <Text style={globalStyles.screenTitle}>Home</Text>
         </View>
     )
 }
 
-export default Home
+export default HomeNavigator
