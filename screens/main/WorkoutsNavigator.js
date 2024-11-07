@@ -31,7 +31,6 @@ function WorkoutsHome({ navigation }) {
       <FAB
         visible={true}
         placement='right'
-        icon={{ name: 'add', color: 'white' }}
         title={"Add Workout"}
         color={globalStyleVariables.fabColor}
         onPress={() => navigation.navigate("AddWorkout")}

@@ -20,10 +20,16 @@ export const globalStyles = StyleSheet.create({
         fontSize: 24,
         fontWeight: 'bold'
     },
+    screenSubtitle: {
+        color: globalStyleVariables.textColor,
+        fontSize: 16,
+        fontStyle: 'italic'
+    },
     formTitle: {
         color: globalStyleVariables.textColor,
         fontSize: 24,
         textAlign: 'center',
+        alignSelf: 'center',
     },
     formText: {
         color: globalStyleVariables.textColor,
