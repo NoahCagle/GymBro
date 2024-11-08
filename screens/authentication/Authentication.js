@@ -3,8 +3,8 @@ import React, { useState } from 'react'
 import { globalStyles, globalStyleVariables } from '../../styles/styles'
 import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import CreateAccount from './CreateAccount';
-import auth from '../../firebase/FirebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../firebase/FirebaseConfig';
 
 const Stack = createNativeStackNavigator();
 

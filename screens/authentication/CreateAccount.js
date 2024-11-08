@@ -2,7 +2,7 @@ import { View, Text, TextInput, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import { globalStyles, globalStyleVariables } from '../../styles/styles'
 import { createUserWithEmailAndPassword } from 'firebase/auth';
-import auth from '../../firebase/FirebaseConfig';
+import { auth } from '../../firebase/FirebaseConfig';
 
 export default function CreateAccount({ navigation }) {
     const [email, setEmail] = useState();

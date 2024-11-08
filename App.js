@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { StyleSheet, View, Text, Platform } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import HomeNavigator from './screens/main/HomeNavigator';
 import WorkoutsNavigator from './screens/main/WorkoutsNavigator';
@@ -9,7 +9,7 @@ import { globalStyles } from './styles/styles';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Authentication from './screens/authentication/Authentication';
 import { onAuthStateChanged } from 'firebase/auth';
-import auth from './firebase/FirebaseConfig';
+import { auth } from './firebase/FirebaseConfig';
 
 const Drawer = createDrawerNavigator();
 const CoreStack = createNativeStackNavigator();

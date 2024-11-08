@@ -2,20 +2,19 @@ import { View, Text, TextInput, KeyboardAvoidingView, ActivityIndicator } from '
 import React, { useState } from 'react'
 import { globalStyles, globalStyleVariables } from '../../../../styles/styles';
 import { TouchableOpacity } from 'react-native';
-import { doc, getDoc, getFirestore, setDoc, updateDoc } from 'firebase/firestore';
-import auth from '../../../../firebase/FirebaseConfig';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { auth, db } from '../../../../firebase/FirebaseConfig';
 
 function AddWeight({ navigation }) {
-    const [weight, setWeight] = useState();
+    const [weight, setWeight] = useState("");
     const [loading, setLoading] = useState(false);
     const date = new Date().toLocaleDateString();
-    const db = getFirestore();
     const docRef = doc(db, "weightTracker", auth.currentUser.uid);
 
     const addData = async () => {
-        setLoading(true);
-        if (weight == '') alert("Your weight field is empty!");
+        if (weight == "") alert("Your weight field is empty!");
         else {
+            setLoading(true);
             try {
                 const snapshot = await getDoc(docRef);
                 if (snapshot.exists()) {
@@ -49,17 +48,18 @@ function AddWeight({ navigation }) {
                 <Text style={globalStyles.screenSubtitle}>Add your weight for {date}</Text>
                 <View style={globalStyles.formWrapper}>
                     <TextInput style={globalStyles.inputText} placeholder="Weight (lbs)" placeholderTextColor={globalStyleVariables.outlineColor} value={weight} onChangeText={(text) => setWeight(onlyNumbers(text))} />
-                    {loading ? (
-                        <ActivityIndicator size='large' color={globalStyleVariables.textColor} />) : (
-                        <View style={globalStyles.formButtonRowWrapper}>
-                            <TouchableOpacity style={globalStyles.button} onPress={() => addData()}>
-                                <Text style={globalStyles.buttonTitle}>Log Weight</Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity style={globalStyles.button} onPress={() => navigation.goBack()}>
-                                <Text style={globalStyles.buttonTitle}>Cancel</Text>
-                            </TouchableOpacity>
-                        </View>
-                    )}
+                    {loading ? (<ActivityIndicator size='large' color={globalStyleVariables.textColor} />) :
+                        (
+                            <View style={globalStyles.formButtonRowWrapper}>
+                                <TouchableOpacity style={globalStyles.button} onPress={() => addData()}>
+                                    <Text style={globalStyles.buttonTitle}>Log Weight</Text>
+                                </TouchableOpacity>
+                                <TouchableOpacity style={globalStyles.button} onPress={() => navigation.goBack()}>
+                                    <Text style={globalStyles.buttonTitle}>Cancel</Text>
+                                </TouchableOpacity>
+                            </View>
+                        )
+                    }
                 </View>
             </KeyboardAvoidingView>
         </View>

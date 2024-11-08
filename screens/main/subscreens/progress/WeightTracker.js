@@ -1,16 +1,14 @@
-import { View, Text, TouchableOpacity } from 'react-native'
+import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native'
 import React, { useCallback, useState } from 'react'
-import { globalStyles } from '../../../../styles/styles';
-import { doc, getDoc, getFirestore } from 'firebase/firestore';
-import auth from '../../../../firebase/FirebaseConfig';
+import { globalStyles, globalStyleVariables } from '../../../../styles/styles';
+import { doc, getDoc } from 'firebase/firestore';
+import { auth, db } from '../../../../firebase/FirebaseConfig';
 import { useFocusEffect } from '@react-navigation/native';
 
 function WeightTracker(props) {
     const [weights, setWeights] = useState([]);
     const [loading, setLoading] = useState(false);
     const navigation = props.navigation;
-    const date = new Date().toLocaleDateString();
-    const db = getFirestore();
     const docRef = doc(db, "weightTracker", auth.currentUser.uid);
 
     // I don't know exactly how this hook works, but it's the only way I've been able to make sure the data displayed on-screen is up to date
@@ -42,12 +40,13 @@ function WeightTracker(props) {
             </View>
 
             {
-                weights == [] || weights.length == 0 || weights == undefined ?
-                    (<Text style={globalStyles.formText}>No weigh-ins tracked yet!</Text>)
-                    :
-                    weights.map((weight, index) => {
-                        return (<Text key={index} style={globalStyles.formText}>{weight.date + ": " + weight.weight} lbs</Text>)
-                    })
+                loading ? (<ActivityIndicator size='large' color={globalStyleVariables.textColor} />) :
+                    weights == [] || weights.length == 0 || weights == undefined ?
+                        (<Text style={globalStyles.formText}>No weigh-ins tracked yet!</Text>)
+                        :
+                        weights.map((weight, index) => {
+                            return (<Text key={index} style={globalStyles.formText}>{weight.date + ": " + weight.weight} lbs</Text>)
+                        })
 
             }
 
