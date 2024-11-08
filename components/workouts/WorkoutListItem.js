@@ -9,6 +9,7 @@ function WorkoutListItem(props) {
     const sets = props.sets;
     const reps = props.reps;
     const weight = props.weight;
+    const deleteAction = props.deleteAction;
 
     return (
         <View>
@@ -22,7 +23,7 @@ function WorkoutListItem(props) {
                     <TouchableOpacity style={globalStyles.button}>
                         <Text style={globalStyles.buttonTitle}>Edit</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={globalStyles.button}>
+                    <TouchableOpacity style={globalStyles.button} onPress={deleteAction}>
                         <Text style={globalStyles.buttonTitle}>Delete</Text>
                     </TouchableOpacity>
                 </View>

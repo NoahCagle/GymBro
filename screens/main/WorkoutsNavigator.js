@@ -6,7 +6,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack'
 import AddWorkoutScreen from './subscreens/workouts/AddWorkoutScreen'
 import WorkoutListItem from '../../components/workouts/WorkoutListItem'
 import { useFocusEffect } from '@react-navigation/native'
-import { doc, getDoc } from 'firebase/firestore'
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
 import { auth, db } from '../../firebase/FirebaseConfig'
 
 const Stack = createNativeStackNavigator();
@@ -36,6 +36,12 @@ function WorkoutsHome({ navigation }) {
     }, [])
   )
 
+  const deleteWorkout = async (index) => {
+    let wkouts = [...workouts.slice(0, index), ...workouts.slice(index + 1)];
+    setWorkouts(wkouts);
+    await setDoc(docRef, { workouts: wkouts });
+  }
+
   return (
     <View style={globalStyles.container}>
       <ScrollView>
@@ -43,7 +49,7 @@ function WorkoutsHome({ navigation }) {
           loading ? (<ActivityIndicator size='large' color={globalStyleVariables.textColor} />) :
             workouts != [] && workouts != undefined ?
               workouts.map((wkout, index) => {
-                return (<WorkoutListItem key={index} name={wkout.name} navigation={navigation} sets={wkout.sets} reps={wkout.reps} weight={wkout.weight} />)
+                return (<WorkoutListItem key={index} name={wkout.name} navigation={navigation} sets={wkout.sets} reps={wkout.reps} weight={wkout.weight} deleteAction={() => deleteWorkout(index)} />)
               })
               : (<Text style={globalStyles.screenSubtitle}>No workouts added yet!</Text>)
         }
