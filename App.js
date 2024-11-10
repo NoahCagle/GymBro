@@ -18,8 +18,7 @@ function Authenticated() {
   return (
     <View style={styles.container}>
       <Drawer.Navigator initialRouteName="Home" screenOptions={globalStyles.drawerStyles.mainDrawerStyle}>
-        <Drawer.Screen name="Home" component={HomeNavigator} options={globalStyles.drawerStyles.mainScreenOptions}
-        />
+        <Drawer.Screen name="Home" component={HomeNavigator} options={globalStyles.drawerStyles.mainScreenOptions} />
         <Drawer.Screen name="Workouts" component={WorkoutsNavigator} options={globalStyles.drawerStyles.mainScreenOptions} />
         <Drawer.Screen name="Progress Tracker" component={ProgressTrackerNavigator} options={globalStyles.drawerStyles.mainScreenOptions} />
       </Drawer.Navigator>
@@ -33,7 +32,6 @@ export default function App() {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       setUser(user);
-      if (user != null) console.log(user.uid);
     })
   }, [user])
 
