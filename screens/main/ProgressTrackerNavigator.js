@@ -4,12 +4,14 @@ import { globalStyles } from '../../styles/styles';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AddWeight from './subscreens/progress/AddWeight';
 import WeightTracker from './subscreens/progress/WeightTracker';
+import WorkoutTracker from './subscreens/progress/WorkoutTracker';
 
 const Stack = createNativeStackNavigator();
 
 function ProgressTracker({ navigation }) {
   return (
     <View style={globalStyles.container}>
+      <WorkoutTracker navigation={navigation}/>
       <WeightTracker navigation={navigation}/>
     </View>
   )
