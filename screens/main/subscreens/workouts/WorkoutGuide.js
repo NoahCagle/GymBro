@@ -24,8 +24,10 @@ function WorkoutGuide({ navigation }) {
             const initTextHandlers = () => {
                 let weightInit = [];
                 let repsInit = [];
+                // sets is the initial number of sets defined when the workout was originally created
+                // however, as sets are added or deleted, weightText.length become the accurate reading of the number of sets to save
                 for (let i = 0; i < sets; i++) {
-                    weightInit.push("");
+                    weightInit.push("" + weight);
                     repsInit.push("");
                 }
                 setWeightText(weightInit);
@@ -59,7 +61,8 @@ function WorkoutGuide({ navigation }) {
 
     const generateSetsJSON = () => {
         let ret = [];
-        for (let i = 0; i < sets; i++) {
+        // weightText.length is used instead of 'sets' because weightText.length represents the actual number of sets the user wishes to record
+        for (let i = 0; i < weightText.length; i++) {
             ret.push({ date: date, workoutId: id, name: name, weight: parseFloat(weightText[i]), reps: parseFloat(repText[i]) });
         }
         return ret;
@@ -79,6 +82,18 @@ function WorkoutGuide({ navigation }) {
         setRepText(newData);
     }
 
+    // Adds a new, empty entry to the end of weightText and repText, such that another SetForm component will be rendered
+    const addSet = () => {
+        setWeightText([...weightText, weight]);
+        setRepText([...repText, ""]);
+    }
+
+    // Removes the element at 'index' in both weightText and repText array
+    const deleteSet = (index) => {
+        setWeightText([...weightText.slice(0, index), ...weightText.slice(index + 1)]);
+        setRepText([...repText.slice(0, index), ...repText.slice(index + 1)]);
+    }
+
     return (
         <View style={globalStyles.container}>
             <ScrollView>
@@ -86,10 +101,15 @@ function WorkoutGuide({ navigation }) {
                 <Text style={globalStyles.screenSubtitle}>Rep goal: {reps}</Text>
                 {
                     // Maps based on the initial value of weightText.length since weightText.length == sets
-                    weightText.map((weight, index) => {
-                        return (<SetForm key={index} weight={weight} index={index} weightTextHandler={(text) => weightTextHandler(text, index)} repTextHandler={(text) => repTextHandler(text, index)} />)
+                    weightText.map((w, index) => {
+                        return (<SetForm key={index} weight={weightText[index]} initReps={repText[index]} index={index} weightTextHandler={(text) => weightTextHandler(text, index)} repTextHandler={(text) => repTextHandler(text, index)} deleteAction={() => deleteSet(index)} />)
                     })
                 }
+                <View style={globalStyles.rowSpacingWrapper}>
+                    <TouchableOpacity style={globalStyles.button} onPress={() => addSet()}>
+                        <Text style={globalStyles.buttonTitle}>+ Extra Set</Text>
+                    </TouchableOpacity>
+                </View>
                 {
                     loading ? (<ActivityIndicator size='large' color={globalStyleVariables.textColor} />) : (
                         <View style={globalStyles.rowSpacingWrapper}>
@@ -108,9 +128,11 @@ function WorkoutGuide({ navigation }) {
 
 function SetForm(props) {
     const weight = props.weight;
+    const initReps = props.initReps;
     const index = props.index;
     const weightTextHandler = props.weightTextHandler;
     const repTextHandler = props.repTextHandler;
+    const deleteAction = props.deleteAction;
 
     return (
         <View style={globalStyles.formWrapper}>
@@ -121,7 +143,12 @@ function SetForm(props) {
             </View>
             <View style={globalStyles.rowSpacingWrapper}>
                 <Text style={globalStyles.textInputTitle}>Reps:     </Text>
-                <TextInput style={[globalStyles.textInput, { maxWidth: '80%' }]} onChangeText={repTextHandler}></TextInput>
+                <TextInput style={[globalStyles.textInput, { maxWidth: '80%' }]} onChangeText={repTextHandler}>{initReps}</TextInput>
+            </View>
+            <View style={globalStyles.rowSpacingWrapper}>
+                <TouchableOpacity style={globalStyles.button} onPress={deleteAction}>
+                    <Text style={globalStyles.buttonTitle}>Delete set</Text>
+                </TouchableOpacity>
             </View>
         </View>
     )
