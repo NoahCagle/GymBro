@@ -9,6 +9,7 @@ import { useFocusEffect } from '@react-navigation/native'
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
 import { auth, db } from '../../firebase/FirebaseConfig'
 import WorkoutGuide from './subscreens/workouts/WorkoutGuide'
+import EditWorkoutScreen from './subscreens/workouts/EditWorkoutScreen'
 
 const Stack = createNativeStackNavigator();
 
@@ -63,7 +64,7 @@ function WorkoutsHome({ navigation }) {
       <FAB
         visible={true}
         placement='right'
-        title={"Add Workout"}
+        title={"+   Add Workout"}
         color={globalStyleVariables.fabColor}
         onPress={() => navigation.navigate("AddWorkout")}
       />
@@ -76,6 +77,7 @@ function WorkoutsNavigator() {
     <Stack.Navigator>
       <Stack.Screen name="WorkoutsNavigator" component={WorkoutsHome} options={{ headerShown: false }} />
       <Stack.Screen name="AddWorkout" component={AddWorkoutScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="EditWorkout" component={EditWorkoutScreen} options={{ headerShown: false }} />
       <Stack.Screen name="WorkoutGuide" component={WorkoutGuide} options={{ headerShown: false }} />
     </Stack.Navigator>
   )
