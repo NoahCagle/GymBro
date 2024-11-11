@@ -1,9 +1,9 @@
-import { View, Text, ScrollView, TextInput } from 'react-native'
+import { View, Text, ScrollView, TextInput, ActivityIndicator } from 'react-native'
 import React, { useCallback, useState } from 'react'
-import { globalStyles } from '../../../../styles/styles';
+import { globalStyles, globalStyleVariables } from '../../../../styles/styles';
 import { useFocusEffect, useRoute } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
-import { addDoc, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../../../../firebase/FirebaseConfig';
 
 function WorkoutGuide({ navigation }) {
@@ -12,19 +12,21 @@ function WorkoutGuide({ navigation }) {
     const [weightText, setWeightText] = useState([]);
     const [repText, setRepText] = useState([]);
 
+    const [loading, setLoading] = useState(false);
+
     const docRef = doc(db, "workoutTracker", auth.currentUser.uid);
     const date = new Date().toLocaleDateString();
 
     useFocusEffect(
         useCallback(() => {
-            // Create initial values for weightText and repText using the known weight and rep goals 
+            // Create initial blank values for weightText and repText using the known weight and rep goals 
             // This is done to prevent weightText and repText being used while they are still null/undefined
             const initTextHandlers = () => {
                 let weightInit = [];
                 let repsInit = [];
                 for (let i = 0; i < sets; i++) {
-                    weightInit.push(weight);
-                    repsInit.push(reps);
+                    weightInit.push("");
+                    repsInit.push("");
                 }
                 setWeightText(weightInit);
                 setRepText(repsInit);
@@ -34,15 +36,22 @@ function WorkoutGuide({ navigation }) {
     )
 
     const saveWorkout = async () => {
+        setLoading(true);
         try {
+            const newSets = generateSetsJSON();
             const snapshot = await getDoc(docRef);
             if (snapshot.exists()) {
-                // Add sets to current day's list of sets
+                const data = snapshot.data();
+                const toLog = { workouts: data.workouts.concat(newSets) };
+                await updateDoc(docRef, toLog);
             } else {
-                let sets = generateSetsJSON();
-                let toLog = {workouts: [{date: date, sets: sets}]};
+                const toLog = { workouts: newSets };
                 await setDoc(docRef, toLog);
             }
+
+            setLoading(false);
+            navigation.navigate("WorkoutsNavigator");
+
         } catch (error) {
             alert("Failed to save workout: " + error.message);
         }
@@ -51,8 +60,7 @@ function WorkoutGuide({ navigation }) {
     const generateSetsJSON = () => {
         let ret = [];
         for (let i = 0; i < sets; i++) {
-            ret.push({id: id, name: name, weight: weightText[i], reps: repText[i]});
-            console.log(repText[i])
+            ret.push({ date: date, workoutId: id, name: name, weight: parseFloat(weightText[i]), reps: parseFloat(repText[i]) });
         }
         return ret;
     }
@@ -77,18 +85,22 @@ function WorkoutGuide({ navigation }) {
                 <Text style={globalStyles.screenTitle}>{name}</Text>
                 <Text style={globalStyles.screenSubtitle}>Rep goal: {reps}</Text>
                 {
+                    // Maps based on the initial value of weightText.length since weightText.length == sets
                     weightText.map((weight, index) => {
                         return (<SetForm key={index} weight={weight} index={index} weightTextHandler={(text) => weightTextHandler(text, index)} repTextHandler={(text) => repTextHandler(text, index)} />)
                     })
                 }
-                <View style={globalStyles.rowSpacingWrapper}>
-                    <TouchableOpacity style={globalStyles.button} onPress={() => saveWorkout()}>
-                        <Text style={globalStyles.buttonTitle}>Save Workout</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("WorkoutsNavigator")}>
-                        <Text style={globalStyles.buttonTitle}>Cancel Workout</Text>
-                    </TouchableOpacity>
-                </View>
+                {
+                    loading ? (<ActivityIndicator size='large' color={globalStyleVariables.textColor} />) : (
+                        <View style={globalStyles.rowSpacingWrapper}>
+                            <TouchableOpacity style={globalStyles.button} onPress={() => saveWorkout()}>
+                                <Text style={globalStyles.buttonTitle}>Save Workout</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("WorkoutsNavigator")}>
+                                <Text style={globalStyles.buttonTitle}>Cancel Workout</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
             </ScrollView>
         </View>
     )

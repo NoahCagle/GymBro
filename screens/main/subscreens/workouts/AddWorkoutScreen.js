@@ -14,9 +14,11 @@ function AddWorkoutScreen({ navigation }) {
     const docRef = doc(db, "workouts", auth.currentUser.uid);
 
     const addData = async () => {
-        if (wkoutName == "" || weight == "" || sets == "" || reps == "") {
+        if (wkoutName == "" || weight == "" || sets == "" || reps == "")
             alert("Make sure you've filled out everything before submitting!");
-        } else {
+        else if (sets == "0")
+            alert("You can't have a workout with zero sets!");
+        else {
             setLoading(true);
             try {
                 const snapshot = await getDoc(docRef);
