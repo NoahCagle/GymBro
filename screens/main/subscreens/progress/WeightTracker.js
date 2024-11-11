@@ -8,6 +8,7 @@ import { useFocusEffect } from '@react-navigation/native';
 function WeightTracker(props) {
     const [weights, setWeights] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [docExists, setDocExists] = useState(false);
     const navigation = props.navigation;
     const docRef = doc(db, "weightTracker", auth.currentUser.uid);
 
@@ -18,13 +19,17 @@ function WeightTracker(props) {
                 setLoading(true);
                 try {
                     const snapshot = await getDoc(docRef);
-                    if (snapshot.exists) {
+                    if (snapshot.exists()) {
                         setWeights(snapshot.data().weights);
+                        setDocExists(true);
+                        setLoading(false);
+                    } else {
+                        setDocExists(false);
+                        setLoading(false);
                     }
                 } catch (error) {
                     alert(error.message);
                 }
-                setLoading(false);
             }
             loadData();
         }, [])
@@ -32,8 +37,8 @@ function WeightTracker(props) {
 
     return (
         <View style={globalStyles.formWrapper}>
-            <View style={globalStyles.formButtonRowWrapper}>
-                <Text style={globalStyles.formTitle}>Weight Tracker</Text>
+            <View style={globalStyles.rowSpacingWrapper}>
+                <Text style={globalStyles.formTitle}>Body Weight Tracker</Text>
                 <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("AddWeight")}>
                     <Text style={globalStyles.buttonTitle}>Weigh-In</Text>
                 </TouchableOpacity>
@@ -41,12 +46,12 @@ function WeightTracker(props) {
 
             {
                 loading ? (<ActivityIndicator size='large' color={globalStyleVariables.textColor} />) :
-                    weights == [] || weights.length == 0 || weights == undefined ?
-                        (<Text style={globalStyles.formText}>No weigh-ins tracked yet!</Text>)
-                        :
+                    docExists && weights.length > 0 ?
                         weights.map((weight, index) => {
                             return (<Text key={index} style={globalStyles.formText}>{weight.date + ": " + weight.weight} lbs</Text>)
                         })
+                        :
+                        (<Text style={globalStyles.formText}>No weigh-ins tracked yet!</Text>)
 
             }
 

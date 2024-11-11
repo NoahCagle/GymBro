@@ -50,7 +50,7 @@ export const globalStyles = StyleSheet.create({
         padding: 10,
         margin: 5
     },
-    inputText: {
+    textInput: {
         borderRadius: 10,
         borderWidth: 2,
         borderColor: globalStyleVariables.outlineColor,
@@ -61,7 +61,13 @@ export const globalStyles = StyleSheet.create({
         marginVertical: 5,
         width: '100%',
     },
-    formButtonRowWrapper: {
+    textInputTitle: {
+        alignSelf: 'center',
+        color: globalStyleVariables.textColor,
+        fontStyle: 'italic',
+        textAlign: 'center',
+    },
+    rowSpacingWrapper: {
         flexDirection: 'row',
         justifyContent: 'space-evenly',
     },

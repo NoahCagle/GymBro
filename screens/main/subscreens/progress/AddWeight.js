@@ -47,10 +47,10 @@ function AddWeight({ navigation }) {
                 <Text style={globalStyles.screenTitle}>Add Weigh-In</Text>
                 <Text style={globalStyles.screenSubtitle}>Add your weight for {date}</Text>
                 <View style={globalStyles.formWrapper}>
-                    <TextInput style={globalStyles.inputText} placeholder="Weight (lbs)" placeholderTextColor={globalStyleVariables.outlineColor} value={weight} onChangeText={(text) => setWeight(onlyNumbers(text))} />
+                    <TextInput style={globalStyles.textInput} placeholder="Weight (lbs)" placeholderTextColor={globalStyleVariables.outlineColor} value={weight} onChangeText={(text) => setWeight(onlyNumbers(text))} />
                     {loading ? (<ActivityIndicator size='large' color={globalStyleVariables.textColor} />) :
                         (
-                            <View style={globalStyles.formButtonRowWrapper}>
+                            <View style={globalStyles.rowSpacingWrapper}>
                                 <TouchableOpacity style={globalStyles.button} onPress={() => addData()}>
                                     <Text style={globalStyles.buttonTitle}>Log Weight</Text>
                                 </TouchableOpacity>

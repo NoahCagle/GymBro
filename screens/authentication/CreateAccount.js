@@ -51,10 +51,10 @@ export default function CreateAccount({ navigation }) {
         <View style={[globalStyles.container, { alignItems: 'center', justifyContent: 'center' }]}>
             <Text style={globalStyles.screenTitle}>Create your account</Text>
             <View style={globalStyles.formWrapper}>
-                <TextInput style={globalStyles.inputText} placeholder="Email" placeholderTextColor={globalStyleVariables.outlineColor} autoCapitalize='none' textContentType='email' importantForAutofill='true' spellCheck={false} value={email} onChangeText={(text) => setEmail(filter(text))} />
-                <TextInput style={globalStyles.inputText} placeholder="Password" placeholderTextColor={globalStyleVariables.outlineColor} autoCapitalize='none' textContentType='password' importantForAutofill='true' secureTextEntry={true} spellCheck={false} value={password} onChangeText={(text) => setPassword(filter(text))} />
-                <TextInput style={globalStyles.inputText} placeholder="Confirm Password" placeholderTextColor={globalStyleVariables.outlineColor} autoCapitalize='none' textContentType='password' importantForAutofill='true' secureTextEntry={true} spellCheck={false} value={confirmPassword} onChangeText={(text) => setConfirmPassword(filter(text))} />
-                <View style={globalStyles.formButtonRowWrapper}>
+                <TextInput style={globalStyles.textInput} placeholder="Email" placeholderTextColor={globalStyleVariables.outlineColor} autoCapitalize='none' textContentType='email' importantForAutofill='true' spellCheck={false} value={email} onChangeText={(text) => setEmail(filter(text))} />
+                <TextInput style={globalStyles.textInput} placeholder="Password" placeholderTextColor={globalStyleVariables.outlineColor} autoCapitalize='none' textContentType='password' importantForAutofill='true' secureTextEntry={true} spellCheck={false} value={password} onChangeText={(text) => setPassword(filter(text))} />
+                <TextInput style={globalStyles.textInput} placeholder="Confirm Password" placeholderTextColor={globalStyleVariables.outlineColor} autoCapitalize='none' textContentType='password' importantForAutofill='true' secureTextEntry={true} spellCheck={false} value={confirmPassword} onChangeText={(text) => setConfirmPassword(filter(text))} />
+                <View style={globalStyles.rowSpacingWrapper}>
                     <TouchableOpacity style={globalStyles.button} onPress={() => createAccount()}>
                         <Text style={globalStyles.buttonTitle}>Create Account</Text>
                     </TouchableOpacity>

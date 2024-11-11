@@ -9,6 +9,7 @@ function WorkoutListItem(props) {
     const sets = props.sets;
     const reps = props.reps;
     const weight = props.weight;
+    const id = props.id;
     const deleteAction = props.deleteAction;
 
     return (
@@ -16,9 +17,9 @@ function WorkoutListItem(props) {
             <View style={globalStyles.formWrapper}>
                 <Text style={globalStyles.formTitle}>{name}</Text>
                 <Text style={globalStyles.formText}>{sets} sets of {reps} at {weight} lbs</Text>
-                <View style={globalStyles.formButtonRowWrapper}>
-                    <TouchableOpacity style={globalStyles.button}>
-                        <Text style={globalStyles.buttonTitle}>Play</Text>
+                <View style={globalStyles.rowSpacingWrapper}>
+                    <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("WorkoutGuide", {name: name, weight: weight, sets: sets, reps: reps, id: id})}>
+                        <Text style={globalStyles.buttonTitle}>Start</Text>
                     </TouchableOpacity>
                     <TouchableOpacity style={globalStyles.button}>
                         <Text style={globalStyles.buttonTitle}>Edit</Text>

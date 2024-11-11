@@ -20,7 +20,6 @@ function LoginPage({ navigation }) {
             const tryRestore = async () => {
                 const savedEmail = await SecureStore.getItemAsync("gymBroEmail");
                 const savedPassword = await SecureStore.getItemAsync("gymBroPassword");
-                console.log(savedPassword);
                 if (savedEmail && savedPassword) {
                     signInWithEmailAndPassword(auth, savedEmail, savedPassword);
                 } else setLoading(false);
@@ -61,12 +60,12 @@ function LoginPage({ navigation }) {
         <View style={[globalStyles.container, { alignItems: 'center', justifyContent: 'center' }]}>
             <Text style={globalStyles.screenTitle}>Sign in</Text>
             <View style={globalStyles.formWrapper}>
-                <TextInput style={globalStyles.inputText} placeholder="Email" placeholderTextColor={globalStyleVariables.outlineColor} autoCapitalize='none' textContentType='email' importantForAutofill='true' spellCheck={false} value={email} onChangeText={(text) => setEmail(filter(text))} onSubmitEditing={() => signIn()}/>
-                <TextInput style={globalStyles.inputText} placeholder="Password" placeholderTextColor={globalStyleVariables.outlineColor} autoCapitalize='none' textContentType='password' importantForAutofill='true' secureTextEntry={true} spellCheck={false} value={password} onChangeText={(text) => setPassword(filter(text))} onSubmitEditing={() => signIn()}/>
+                <TextInput style={globalStyles.textInput} placeholder="Email" placeholderTextColor={globalStyleVariables.outlineColor} autoCapitalize='none' textContentType='email' importantForAutofill='true' spellCheck={false} value={email} onChangeText={(text) => setEmail(filter(text))} onSubmitEditing={() => signIn()}/>
+                <TextInput style={globalStyles.textInput} placeholder="Password" placeholderTextColor={globalStyleVariables.outlineColor} autoCapitalize='none' textContentType='password' importantForAutofill='true' secureTextEntry={true} spellCheck={false} value={password} onChangeText={(text) => setPassword(filter(text))} onSubmitEditing={() => signIn()}/>
                 {
 
                     loading ? (<ActivityIndicator size='large' color={globalStyleVariables.textColor} />) : (
-                        <View style={globalStyles.formButtonRowWrapper}>
+                        <View style={globalStyles.rowSpacingWrapper}>
                             <TouchableOpacity style={globalStyles.button} onPress={() => signIn()}>
                                 <Text style={globalStyles.buttonTitle}>Login</Text>
                             </TouchableOpacity>

@@ -34,6 +34,8 @@ function AddWorkoutScreen({ navigation }) {
                 } else {
                     let toLog = { workouts: [{ name: wkoutName, weight: parseFloat(weight), sets: parseFloat(sets), reps: parseFloat(reps), id: 0 }] };
                     await setDoc(docRef, toLog);
+                    setLoading(false);
+                    navigation.navigate("WorkoutsNavigator");
                 }
 
 
@@ -61,13 +63,13 @@ function AddWorkoutScreen({ navigation }) {
             <KeyboardAvoidingView>
                 <Text style={globalStyles.screenTitle}>Add Workout</Text>
                 <View style={globalStyles.formWrapper}>
-                    <TextInput style={globalStyles.inputText} placeholder="Workout Name" placeholderTextColor={globalStyleVariables.outlineColor} autoCapitalize={"words"} value={wkoutName} onChangeText={(text) => setWkoutName(text)} />
-                    <TextInput style={globalStyles.inputText} placeholder="Weight (lbs)" placeholderTextColor={globalStyleVariables.outlineColor} value={weight} onChangeText={(text) => setWeight(onlyNumbers(text))} />
-                    <TextInput style={globalStyles.inputText} placeholder="Sets" placeholderTextColor={globalStyleVariables.outlineColor} value={sets} onChangeText={(text) => setSets(onlyNumbers(text))} />
-                    <TextInput style={globalStyles.inputText} placeholder="Reps" placeholderTextColor={globalStyleVariables.outlineColor} value={reps} onChangeText={(text) => setReps(onlyNumbers(text))} />
+                    <TextInput style={globalStyles.textInput} placeholder="Workout Name" placeholderTextColor={globalStyleVariables.outlineColor} autoCapitalize={"words"} value={wkoutName} onChangeText={(text) => setWkoutName(text)} />
+                    <TextInput style={globalStyles.textInput} placeholder="Weight (lbs)" placeholderTextColor={globalStyleVariables.outlineColor} value={weight} onChangeText={(text) => setWeight(onlyNumbers(text))} />
+                    <TextInput style={globalStyles.textInput} placeholder="Sets" placeholderTextColor={globalStyleVariables.outlineColor} value={sets} onChangeText={(text) => setSets(onlyNumbers(text))} />
+                    <TextInput style={globalStyles.textInput} placeholder="Reps" placeholderTextColor={globalStyleVariables.outlineColor} value={reps} onChangeText={(text) => setReps(onlyNumbers(text))} />
                     {loading ? (<ActivityIndicator size='large' color={globalStyleVariables.textColor} />) :
                         (
-                            <View style={globalStyles.formButtonRowWrapper}>
+                            <View style={globalStyles.rowSpacingWrapper}>
                                 <TouchableOpacity style={globalStyles.button} onPress={() => addData()}>
                                     <Text style={globalStyles.buttonTitle}>Add Workout</Text>
                                 </TouchableOpacity>
