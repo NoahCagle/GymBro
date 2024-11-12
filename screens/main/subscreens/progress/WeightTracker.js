@@ -1,4 +1,4 @@
-import { View, Text, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView } from 'react-native'
 import React, { useCallback, useState } from 'react'
 import { globalStyles, globalStyleVariables } from '../../../../styles/styles';
 import { doc, getDoc } from 'firebase/firestore';
@@ -36,25 +36,25 @@ function WeightTracker(props) {
     )
 
     return (
-        <View style={globalStyles.formWrapper}>
+        <View style={[globalStyles.formWrapper, { maxHeight: "45%" }]}>
             <View style={globalStyles.rowSpacingWrapper}>
                 <Text style={globalStyles.formTitle}>Body Weight Tracker</Text>
                 <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("AddWeight")}>
                     <Text style={globalStyles.buttonTitle}>Weigh-In</Text>
                 </TouchableOpacity>
             </View>
+            <ScrollView>
+                {
+                    loading ? (<ActivityIndicator size='large' color={globalStyleVariables.textColor} />) :
+                        docExists && weights.length > 0 ?
+                            weights.map((weight, index) => {
+                                return (<Text key={index} style={globalStyles.formText}>{weight.date + ": " + weight.weight} lbs</Text>)
+                            })
+                            :
+                            (<Text style={globalStyles.formText}>No weigh-ins tracked yet!</Text>)
 
-            {
-                loading ? (<ActivityIndicator size='large' color={globalStyleVariables.textColor} />) :
-                    docExists && weights.length > 0 ?
-                        weights.map((weight, index) => {
-                            return (<Text key={index} style={globalStyles.formText}>{weight.date + ": " + weight.weight} lbs</Text>)
-                        })
-                        :
-                        (<Text style={globalStyles.formText}>No weigh-ins tracked yet!</Text>)
-
-            }
-
+                }
+            </ScrollView>
         </View>
     )
 }

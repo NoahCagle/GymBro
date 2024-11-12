@@ -33,6 +33,7 @@ function WorkoutGuide({ navigation }) {
                 setWeightText(weightInit);
                 setRepText(repsInit);
             }
+
             initTextHandlers();
         }, [])
     )
@@ -44,10 +45,10 @@ function WorkoutGuide({ navigation }) {
             const snapshot = await getDoc(docRef);
             if (snapshot.exists()) {
                 const data = snapshot.data();
-                const toLog = { workouts: data.workouts.concat(newSets) };
+                const toLog = { sets: data.workouts.concat(newSets) };
                 await updateDoc(docRef, toLog);
             } else {
-                const toLog = { workouts: newSets };
+                const toLog = { sets: newSets };
                 await setDoc(docRef, toLog);
             }
 
