@@ -1,7 +1,7 @@
 import { View, Text, ActivityIndicator, ScrollView } from 'react-native'
 import React, { useCallback, useState } from 'react'
 import { globalStyles, globalStyleVariables } from '../../../../styles/styles';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../../../../firebase/FirebaseConfig';
 import { useFocusEffect } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
@@ -11,7 +11,6 @@ function WorkoutTracker(props) {
     const embedded = props.embedded;
     const docRef = doc(db, "workoutTracker", auth.currentUser.uid);
     const [loading, setLoading] = useState(false);
-    const [sets, setSets] = useState([]);
     const [parsedData, setParsedData] = useState([]);
     const [docExists, setDocExists] = useState(false);
 
@@ -26,8 +25,7 @@ function WorkoutTracker(props) {
 
                         const data = snapshot.data();
 
-                        setSets(data.sets);
-                        setParsedData(parseData(data.sets));
+                        setParsedData(parseData(data.sets.reverse()));
 
                     } else
                         setDocExists(false);
@@ -55,7 +53,6 @@ function WorkoutTracker(props) {
 
         for (let i = 0; i < sets.length; i++) {
             let dateFound = dateExists(sets[i].date);
-            console.log(dateFound);
             if (dateFound == -1) {
                 parse.dates.push({ date: sets[i].date, sets: [sets[i]] });
             } else {
@@ -76,6 +73,11 @@ function WorkoutTracker(props) {
             return (
                 <View key={i} style={{ marginVertical: 5 }}>
                     <Text key={i} style={[globalStyles.formTitle, { textDecorationLine: "underline" }]}>{date.date}</Text>
+                    <View style={globalStyles.rowSpacingWrapper}>
+                        <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("DayBreakdown", {date: parsedData.dates[i]})}>
+                            <Text style={globalStyles.buttonTitle}>Detailed Breakdown -{'>'}</Text>
+                        </TouchableOpacity>
+                    </View>
                     {
                         parsedData.dates[i].sets.map((set, j) => {
                             return (<Text key={j} style={globalStyles.formText}>{set.name}: {set.reps} reps at {set.weight} lbs</Text>)

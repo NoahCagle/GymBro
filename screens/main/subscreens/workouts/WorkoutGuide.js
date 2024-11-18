@@ -45,7 +45,7 @@ function WorkoutGuide({ navigation }) {
             const snapshot = await getDoc(docRef);
             if (snapshot.exists()) {
                 const data = snapshot.data();
-                const toLog = { sets: data.workouts.concat(newSets) };
+                const toLog = { sets: data.sets.concat(newSets) };
                 await updateDoc(docRef, toLog);
             } else {
                 const toLog = { sets: newSets };

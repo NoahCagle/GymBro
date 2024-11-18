@@ -23,13 +23,21 @@ export const globalStyles = StyleSheet.create({
     screenSubtitle: {
         color: globalStyleVariables.textColor,
         fontSize: 16,
-        fontStyle: 'italic'
+        fontStyle: 'italic',
+        alignSelf: 'center',
     },
     formTitle: {
         color: globalStyleVariables.textColor,
         fontSize: 24,
         textAlign: 'center',
         alignSelf: 'center',
+    },
+    formSubtitle: {
+        color: globalStyleVariables.textColor,
+        fontSize: 20,
+        textAlign: 'center',
+        alignSelf: 'center',
+        fontStyle: 'italic'
     },
     formText: {
         color: globalStyleVariables.textColor,
