@@ -67,24 +67,31 @@ function WorkoutsListScreen({ navigation }) {
 
     }
 
-    const deleteWorkout = async (index) => {
+    const findWorkoutIndexById = (id) => {
+        for (let i = 0; i < workouts.length; i++) {
+            if (workouts[i].id == id) return i;
+        }
+    }
+
+    const deleteWorkout = async (id) => {
+        let index = findWorkoutIndexById(id);
         let wkouts = [...workouts.slice(0, index), ...workouts.slice(index + 1)];
         setWorkouts(wkouts);
-        await setDoc(docRef, { workouts: wkouts });
+        await updateDoc(docRef, { workouts: wkouts });
     }
 
     function CollapsibleGroup(props) {
         const group = props.group;
         const [collapsed, setCollapsed] = useState(true);
         return (
-            <View>
+            <View style={globalStyles.collapsibleWrapper}>
                 <TouchableOpacity onPress={() => setCollapsed(!collapsed)}>
                     <Text style={globalStyles.screenTitle}>{collapsed ? "▼" : "▲"} {group.name}</Text>
                 </TouchableOpacity>
                 <Collapsible collapsed={collapsed}>
                     {
                         group.workouts.map((wkout, index) => {
-                            return (<WorkoutListItem key={index} name={wkout.name} navigation={navigation} sets={wkout.sets} reps={wkout.reps} weight={wkout.weight} group={wkout.group} id={wkout.id} deleteAction={() => deleteWorkout(index)} />)
+                            return (<WorkoutListItem key={index} name={wkout.name} navigation={navigation} sets={wkout.sets} reps={wkout.reps} weight={wkout.weight} group={wkout.group} id={wkout.id} deleteAction={() => deleteWorkout(wkout.id)} />)
                         })
                     }
                 </Collapsible>

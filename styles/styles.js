@@ -58,6 +58,20 @@ export const globalStyles = StyleSheet.create({
         padding: 10,
         margin: 5
     },
+    collapsibleWrapper: {
+        backgroundColor: globalStyleVariables.bgColor,
+        borderRadius: 10,
+        borderWidth: 2,
+        borderColor: globalStyleVariables.outlineColor,
+        shadowColor: '#000',
+        shadowRadius: 5,
+        shadowOpacity: 0.1,
+        elevation: 3,
+        width: '100%', // Doesn't end up going to 100% width background container padding is 20
+        alignSelf: 'center',
+        padding: 10,
+        margin: 5
+    },
     textInput: {
         borderRadius: 10,
         borderWidth: 2,

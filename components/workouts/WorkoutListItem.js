@@ -1,5 +1,5 @@
 import { View, Text } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react'
 import { globalStyles } from '../../styles/styles';
 import { TouchableOpacity } from 'react-native';
 
@@ -12,26 +12,28 @@ function WorkoutListItem(props) {
     const group = props.group;
     const id = props.id;
     const deleteAction = props.deleteAction;
+    const [visible, setVisible] = useState(true);
 
-    return (
-        <View>
-            <View style={globalStyles.formWrapper}>
-                <Text style={globalStyles.formTitle}>{name}</Text>
-                <Text style={globalStyles.formText}>{sets} sets of {reps} at {weight} lbs</Text>
-                <View style={globalStyles.rowSpacingWrapper}>
-                    <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("WorkoutGuide", { name: name, weight: weight, sets: sets, reps: reps, group: group, id: id })}>
-                        <Text style={globalStyles.buttonTitle}>Start</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("EditWorkout", { name: name, weight: weight, sets: sets, reps: reps, group: group, id: id })}>
-                        <Text style={globalStyles.buttonTitle}>Edit</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={globalStyles.button} onPress={deleteAction}>
-                        <Text style={globalStyles.buttonTitle}>Delete</Text>
-                    </TouchableOpacity>
+    if (visible)
+        return (
+            <View>
+                <View style={globalStyles.formWrapper}>
+                    <Text style={globalStyles.formTitle}>{name}</Text>
+                    <Text style={globalStyles.formText}>{sets} sets of {reps} at {weight} lbs</Text>
+                    <View style={globalStyles.rowSpacingWrapper}>
+                        <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("WorkoutGuide", { name: name, weight: weight, sets: sets, reps: reps, group: group, id: id })}>
+                            <Text style={globalStyles.buttonTitle}>Start</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("EditWorkout", { name: name, weight: weight, sets: sets, reps: reps, group: group, id: id })}>
+                            <Text style={globalStyles.buttonTitle}>Edit</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={globalStyles.button} onPress={() => { deleteAction(); setVisible(false) }}>
+                            <Text style={globalStyles.buttonTitle}>Delete</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
             </View>
-        </View>
-    )
+        )
 }
 
 export default WorkoutListItem;
