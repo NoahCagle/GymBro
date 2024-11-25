@@ -14,7 +14,7 @@ function AddWorkoutScreen({ navigation }) {
     const [reps, setReps] = useState("");
     const [group, setGroup] = useState(1);
     const [loading, setLoading] = useState(false);
-    const [groups, setGroups] = useState([]);
+    const [groupsList, setGroupsList] = useState([]);
     const docRef = doc(db, "workouts", auth.currentUser.uid);
 
     useFocusEffect(
@@ -28,9 +28,9 @@ function AddWorkoutScreen({ navigation }) {
                         gs.map((group) => {
                             temp.push(group);
                         })
-                        setGroups(temp);
+                        setGroupsList(temp);
                     } else {
-                        setGroups([{ id: -1, name: "No Group" }])
+                        setGroupsList([{ id: -1, name: "No Group" }])
                     }
                 } catch (error) {
                     alert(error.message);
@@ -106,7 +106,7 @@ function AddWorkoutScreen({ navigation }) {
                             mode={"dropdown"}
                         >
                             {
-                                groups.map((group, index) => {
+                                groupsList.map((group, index) => {
                                     return (
                                         <Picker.Item key={index} style={globalStyles.picker.pickerItem} label={group.name} value={group.id} />
                                     )
