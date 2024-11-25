@@ -53,10 +53,11 @@ function WorkoutGuide({ navigation }) {
             }
 
             setLoading(false);
-            navigation.navigate("WorkoutsNavigator");
+            navigation.goBack();
 
         } catch (error) {
             alert("Failed to save workout: " + error.message);
+            setLoading(false);
         }
     }
 
@@ -117,7 +118,7 @@ function WorkoutGuide({ navigation }) {
                             <TouchableOpacity style={globalStyles.button} onPress={() => saveWorkout()}>
                                 <Text style={globalStyles.buttonTitle}>Save Workout</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("WorkoutsNavigator")}>
+                            <TouchableOpacity style={globalStyles.button} onPress={() => navigation.goBack()}>
                                 <Text style={globalStyles.buttonTitle}>Cancel Workout</Text>
                             </TouchableOpacity>
                         </View>

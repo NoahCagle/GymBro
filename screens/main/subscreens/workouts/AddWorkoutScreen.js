@@ -1,17 +1,44 @@
 import { View, Text, TextInput, KeyboardAvoidingView, ActivityIndicator } from 'react-native'
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { globalStyles, globalStyleVariables } from '../../../../styles/styles';
 import { TouchableOpacity } from 'react-native';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../../../../firebase/FirebaseConfig';
+import { useFocusEffect } from '@react-navigation/native';
+import { Picker } from '@react-native-picker/picker';
 
 function AddWorkoutScreen({ navigation }) {
     const [wkoutName, setWkoutName] = useState("");
     const [weight, setWeight] = useState("");
     const [sets, setSets] = useState("");
     const [reps, setReps] = useState("");
+    const [group, setGroup] = useState(1);
     const [loading, setLoading] = useState(false);
+    const [groups, setGroups] = useState([]);
     const docRef = doc(db, "workouts", auth.currentUser.uid);
+
+    useFocusEffect(
+        useCallback(() => {
+            const loadGroups = async () => {
+                try {
+                    const snapshot = await getDoc(docRef);
+                    if (snapshot.exists()) {
+                        const gs = snapshot.data().groups;
+                        let temp = [];
+                        gs.map((group) => {
+                            temp.push(group);
+                        })
+                        setGroups(temp);
+                    } else {
+                        setGroups([{ id: -1, name: "No Group" }])
+                    }
+                } catch (error) {
+                    alert(error.message);
+                }
+            }
+            loadGroups();
+        }, [])
+    )
 
     const addData = async () => {
         if (wkoutName == "" || weight == "" || sets == "" || reps == "")
@@ -28,21 +55,22 @@ function AddWorkoutScreen({ navigation }) {
                     if (workoutNameAlreadyExists(workouts)) {
                         alert("Workout with that name already exists!")
                     } else {
-                        let toLog = { name: wkoutName, weight: parseFloat(weight), sets: parseFloat(sets), reps: parseFloat(reps), id: nextId };
+                        let toLog = { name: wkoutName, weight: parseFloat(weight), sets: parseFloat(sets), reps: parseFloat(reps), group: group, id: nextId };
                         workouts = [...workouts, toLog];
                         await updateDoc(docRef, { workouts: workouts });
-                        navigation.navigate("WorkoutsNavigator");
+                        navigation.goBack();
                     }
                 } else {
-                    let toLog = { workouts: [{ name: wkoutName, weight: parseFloat(weight), sets: parseFloat(sets), reps: parseFloat(reps), id: 0 }] };
+                    let toLog = { workouts: [{ name: wkoutName, weight: parseFloat(weight), sets: parseFloat(sets), reps: parseFloat(reps), group: group, id: 0 }], groups: [{ id: -1, name: "No Group" }] };
                     await setDoc(docRef, toLog);
                     setLoading(false);
-                    navigation.navigate("WorkoutsNavigator");
+                    navigation.goBack();
                 }
 
 
             } catch (error) {
                 alert(error.message);
+                setLoading(false);
             }
         }
     }
@@ -69,6 +97,23 @@ function AddWorkoutScreen({ navigation }) {
                     <TextInput style={globalStyles.textInput} placeholder="Weight (lbs)" placeholderTextColor={globalStyleVariables.outlineColor} value={weight} onChangeText={(text) => setWeight(onlyNumbers(text))} />
                     <TextInput style={globalStyles.textInput} placeholder="Sets" placeholderTextColor={globalStyleVariables.outlineColor} value={sets} onChangeText={(text) => setSets(onlyNumbers(text))} />
                     <TextInput style={globalStyles.textInput} placeholder="Reps" placeholderTextColor={globalStyleVariables.outlineColor} value={reps} onChangeText={(text) => setReps(onlyNumbers(text))} />
+                    <View style={globalStyles.textInput}>
+                        <Picker
+                            selectedValue={group}
+                            onValueChange={(itemValue) => setGroup(itemValue)}
+                            style={globalStyles.picker.pickerComponent}
+                            dropdownIconColor={globalStyleVariables.textColor}
+                            mode={"dropdown"}
+                        >
+                            {
+                                groups.map((group, index) => {
+                                    return (
+                                        <Picker.Item key={index} style={globalStyles.picker.pickerItem} label={group.name} value={group.id} />
+                                    )
+                                })
+                            }
+                        </Picker>
+                    </View>
                     {loading ? (<ActivityIndicator size='large' color={globalStyleVariables.textColor} />) :
                         (
                             <View style={globalStyles.rowSpacingWrapper}>

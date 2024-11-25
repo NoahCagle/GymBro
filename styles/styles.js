@@ -90,6 +90,16 @@ export const globalStyles = StyleSheet.create({
         color: globalStyleVariables.textColor,
         padding: 5
     },
+    // Picker takes extra style from surrounding <View style={globalStyles.textInput}>
+    picker: {
+        pickerComponent: {
+            color: globalStyleVariables.textColor,
+            margin: -10,
+        },
+        pickerItem: {
+            fontSize: 14
+        }
+    },
     drawerStyles: {
         mainScreenOptions: {
             headerStyle: {

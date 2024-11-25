@@ -20,7 +20,7 @@ function WeightTracker(props) {
                 try {
                     const snapshot = await getDoc(docRef);
                     if (snapshot.exists()) {
-                        setWeights(snapshot.data().weights);
+                        setWeights(snapshot.data().weights.reverse());
                         setDocExists(true);
                         setLoading(false);
                     } else {

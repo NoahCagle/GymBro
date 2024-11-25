@@ -1,4 +1,4 @@
-import { View, Text, ScrollView, ActivityIndicator } from 'react-native'
+import { View, Text, ScrollView, ActivityIndicator, Platform } from 'react-native'
 import React, { useCallback, useState } from 'react'
 import { globalStyles, globalStyleVariables } from '../../../../styles/styles';
 import { TouchableOpacity } from 'react-native';
@@ -98,13 +98,65 @@ function DayBreakdown({ navigation }) {
     }
 
     const returnBody = () => {
+        if (Platform.OS == 'web') {
+            return (
+                <View style={{ marginVertical: 5 }}>
+                    {
+                        parsedData.map((wkout, index) => {
+                            return (
+                                <View key={index} style={globalStyles.formWrapper}>
+                                    <View style={globalStyles.rowSpacingWrapper}>
+                                        <View>
+                                            <Text style={[globalStyles.formTitle, { textDecorationLine: 'underline' }]}>{getWorkoutById(wkout.workoutId).name}</Text>
+                                            <Text style={globalStyles.formSubtitle}>{wkout.sets.length} sets</Text>
+                                            {
+                                                wkout.sets.map((set, index) => {
+                                                    return (
+                                                        <View key={index}>
+                                                            <Text style={globalStyles.formText}>{set.reps} reps at {set.weight} lbs</Text>
+                                                        </View>
+                                                    )
+                                                })
+                                            }
+                                        </View>
+                                        <View>
+                                            <Text style={[globalStyles.formSubtitle, { textDecorationLine: 'underline' }]}>Mathematical Analysis</Text>
+                                            <View style={globalStyles.rowSpacingWrapper}>
+                                                <Text style={globalStyles.formText}>Avg Reps: {averageReps(wkout)} reps</Text>
+                                                <Text style={globalStyles.formText}>Goal: {getWorkoutById(wkout.workoutId).reps} reps</Text>
+                                            </View>
+                                            <View style={globalStyles.rowSpacingWrapper}>
+                                                <Text style={globalStyles.formText}>Avg Weight: {averageWeight(wkout)} lbs</Text>
+                                                <Text style={globalStyles.formText}>Goal: {getWorkoutById(wkout.workoutId).weight} lbs</Text>
+                                            </View>
+                                            <Text style={[globalStyles.formSubtitle, { textDecorationLine: 'underline' }]}>Avg To Goal Difference</Text>
+                                            <View style={globalStyles.rowSpacingWrapper}>
+                                                <Text style={globalStyles.formText}>Reps: {plusMinus(averageReps(wkout) - getWorkoutById(wkout.workoutId).reps)} reps</Text>
+                                                <Text style={globalStyles.formText}>Weight: {plusMinus(averageWeight(wkout) - getWorkoutById(wkout.workoutId).weight)} lbs</Text>
+                                            </View>
+
+
+                                        </View>
+                                    </View>
+                                            <View style={globalStyles.rowSpacingWrapper}>
+                                                <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("EditWorkout", { name: getWorkoutById(wkout.workoutId).name, weight: getWorkoutById(wkout.workoutId).weight, sets: getWorkoutById(wkout.workoutId).sets, reps: getWorkoutById(wkout.workoutId).reps, id: getWorkoutById(wkout.workoutId).id, })}>
+                                                    <Text style={globalStyles.buttonTitle}>Edit Workout</Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                </View>
+                            )
+                        })
+                    }
+                </View>
+            )
+        }
         return (
             <View style={{ marginVertical: 5 }}>
                 {
                     parsedData.map((wkout, index) => {
                         return (
-                            <View style={globalStyles.formWrapper}>
-                                <Text key={index} style={[globalStyles.formTitle, { textDecorationLine: 'underline' }]}>{getWorkoutById(wkout.workoutId).name}</Text>
+                            <View key={index} style={globalStyles.formWrapper}>
+                                <Text style={[globalStyles.formTitle, { textDecorationLine: 'underline' }]}>{getWorkoutById(wkout.workoutId).name}</Text>
                                 <Text style={globalStyles.formSubtitle}>{wkout.sets.length} sets</Text>
                                 {
                                     wkout.sets.map((set, index) => {
