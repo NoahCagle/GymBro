@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { globalStyles } from '../../styles/styles';
 import { TouchableOpacity } from 'react-native';
@@ -14,6 +14,24 @@ function WorkoutListItem(props) {
     const deleteAction = props.deleteAction;
     const [visible, setVisible] = useState(true);
 
+    const confirmDeletion = () => {
+        Alert.alert('Confirm deletion', 'Are you sure you want to delete ' + name + '?', [
+            {
+                text: 'Delete',
+                onPress: () => {
+                    deleteAction();
+                    setVisible(false);
+                    console.log("deleted " + name);
+                },
+            },
+            {
+                text: 'Cancel',
+                onPress: () => console.log("don't delete"),
+                style: 'cancel',
+            },
+        ]);
+    }
+
     if (visible)
         return (
             <View>
@@ -27,8 +45,11 @@ function WorkoutListItem(props) {
                         <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("EditWorkout", { name: name, weight: weight, sets: sets, reps: reps, group: group, id: id })}>
                             <Text style={globalStyles.buttonTitle}>Edit</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={globalStyles.button} onPress={() => { deleteAction(); setVisible(false) }}>
+                        <TouchableOpacity style={globalStyles.button} onPress={() => confirmDeletion()}>
                             <Text style={globalStyles.buttonTitle}>Delete</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("HistoricalReview", {workoutId: id, workoutName: name})}>
+                            <Text style={globalStyles.buttonTitle}>Details</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
