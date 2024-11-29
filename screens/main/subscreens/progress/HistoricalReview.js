@@ -5,13 +5,13 @@ import { useFocusEffect, useRoute } from '@react-navigation/native';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../../../../firebase/FirebaseConfig';
 import { ActivityIndicator } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 
 function HistoricalReview({ navigation }) {
     const route = useRoute();
     const workoutId = route.params.workoutId;
     const workoutName = route.params.workoutName;
     const trackerDocRef = doc(db, "workoutTracker", auth.currentUser.uid);
-    const [workoutsDoc, setWorkoutsDoc] = useState(null);
     const [parsedTracker, setParsedTracker] = useState(null);
     const [loading, setLoading] = useState(false);
 
@@ -116,6 +116,13 @@ function HistoricalReview({ navigation }) {
                         })
                         : (<ActivityIndicator size='large' color={globalStyleVariables.textColor} />)
                 }
+
+                <View style={globalStyles.rowSpacingWrapper}>
+                    <TouchableOpacity style={globalStyles.button} onPress={() => navigation.goBack()}>
+                        <Text style={globalStyles.buttonTitle}>Go back</Text>
+                    </TouchableOpacity>
+                </View>
+
             </ScrollView>
         </View>
     )

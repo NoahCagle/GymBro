@@ -49,7 +49,7 @@ function WorkoutListItem(props) {
                             <Text style={globalStyles.buttonTitle}>Delete</Text>
                         </TouchableOpacity>
                         <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("HistoricalReview", {workoutId: id, workoutName: name})}>
-                            <Text style={globalStyles.buttonTitle}>Details</Text>
+                            <Text style={globalStyles.buttonTitle}>History</Text>
                         </TouchableOpacity>
                     </View>
                 </View>
