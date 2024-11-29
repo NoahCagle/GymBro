@@ -9,7 +9,7 @@ import { doc, getDoc } from 'firebase/firestore';
 function DayBreakdown({ navigation }) {
     const route = useRoute();
     const date = route.params.date;
-    const sets = date.sets.reverse();
+    const sets = date.sets;
     const [loading, setLoading] = useState(false);
     const [workoutsDoc, setWorkoutsDoc] = useState([]);
     const [parsedData, setParsedData] = useState([]);

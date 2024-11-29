@@ -10,6 +10,7 @@ function WeightTracker(props) {
     const [loading, setLoading] = useState(false);
     const [docExists, setDocExists] = useState(false);
     const navigation = props.navigation;
+    const embedded = props.embedded;
     const docRef = doc(db, "weightTracker", auth.currentUser.uid);
 
     // I don't know exactly how this hook works, but it's the only way I've been able to make sure the data displayed on-screen is up to date
@@ -35,14 +36,19 @@ function WeightTracker(props) {
         }, [])
     )
 
-    return (
-        <View style={[globalStyles.formWrapper, { maxHeight: "45%" }]}>
+    const returnHeader = () => {
+        return (
             <View style={globalStyles.rowSpacingWrapper}>
                 <Text style={globalStyles.formTitle}>Body Weight Tracker</Text>
                 <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("AddWeight")}>
                     <Text style={globalStyles.buttonTitle}>Weigh-In</Text>
                 </TouchableOpacity>
             </View>
+        )
+    }
+
+    const returnBody = () => {
+        return (
             <ScrollView>
                 {
                     loading ? (<ActivityIndicator size='large' color={globalStyleVariables.textColor} />) :
@@ -55,8 +61,36 @@ function WeightTracker(props) {
 
                 }
             </ScrollView>
+        )
+    }
+
+    if (embedded)
+        return (
+            <View style={[globalStyles.formWrapper, { maxHeight: "45%" }]}>
+                {returnHeader()}
+                {returnBody()}
+                <View style={globalStyles.rowSpacingWrapper}>
+                    <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("WeightTracker")}>
+                        <Text style={globalStyles.buttonTitle}>Expand</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        )
+
+    return (
+        <View style={globalStyles.container}>
+            <View style={globalStyles.formWrapper}>
+                {returnHeader()}
+                {returnBody()}
+            </View>
+            <View style={globalStyles.rowSpacingWrapper}>
+                <TouchableOpacity style={globalStyles.button} onPress={() => navigation.goBack()}>
+                    <Text style={globalStyles.buttonTitle}>Go back</Text>
+                </TouchableOpacity>
+            </View>
         </View>
     )
+
 }
 
 export default WeightTracker;

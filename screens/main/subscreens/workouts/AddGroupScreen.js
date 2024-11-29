@@ -53,7 +53,7 @@ function AddGroupScreen({ navigation }) {
     return (
         <View style={globalStyles.container}>
             <KeyboardAvoidingView>
-                <Text style={globalStyles.screenTitle}>Add Group</Text>
+                <Text style={globalStyles.screenTitle}>Create Group</Text>
                 <View style={globalStyles.formWrapper}>
                     <TextInput style={globalStyles.textInput} placeholder="Group Name" placeholderTextColor={globalStyleVariables.outlineColor} autoCapitalize={"words"} value={groupName} onChangeText={(text) => setGroupName(text)} />
                     {loading ? (<ActivityIndicator size='large' color={globalStyleVariables.textColor} />) :

@@ -25,7 +25,7 @@ function WorkoutTracker(props) {
 
                         const data = snapshot.data();
 
-                        setParsedData(parseData(data.sets.reverse()));
+                        setParsedData(parseData(data.sets));
 
                     } else
                         setDocExists(false);
@@ -60,6 +60,9 @@ function WorkoutTracker(props) {
             }
         }
 
+        // Reversed dates here so that the first workout session in the array is the latest session
+        parse.dates.reverse();
+
         return parse;
 
     }
@@ -74,7 +77,7 @@ function WorkoutTracker(props) {
                 <View key={i} style={{ marginVertical: 5 }}>
                     <Text key={i} style={[globalStyles.formTitle, { textDecorationLine: "underline" }]}>{date.date}</Text>
                     <View style={globalStyles.rowSpacingWrapper}>
-                        <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("DayBreakdown", {date: parsedData.dates[i]})}>
+                        <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("DayBreakdown", { date: parsedData.dates[i] })}>
                             <Text style={globalStyles.buttonTitle}>Detailed Breakdown -{'>'}</Text>
                         </TouchableOpacity>
                     </View>
@@ -93,12 +96,7 @@ function WorkoutTracker(props) {
     const returnHeader = () => {
         if (embedded)
             return (
-                <View style={globalStyles.rowSpacingWrapper}>
-                    <Text style={globalStyles.formTitle}>Workout Tracker</Text>
-                    <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("WorkoutTracker")}>
-                        <Text style={globalStyles.buttonTitle}>Expand</Text>
-                    </TouchableOpacity>
-                </View>
+                <Text style={globalStyles.formTitle}>Workout Tracker</Text>
             )
         return (<Text style={globalStyles.formTitle}>Workout Tracker</Text>);
     }
@@ -111,6 +109,11 @@ function WorkoutTracker(props) {
                 <ScrollView>
                     {returnBody()}
                 </ScrollView>
+                <View style={globalStyles.rowSpacingWrapper}>
+                    <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("WorkoutTracker")}>
+                        <Text style={globalStyles.buttonTitle}>Expand</Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         )
     // If not embedded, return a full page with a 'Back' button

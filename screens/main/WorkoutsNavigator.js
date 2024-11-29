@@ -4,7 +4,6 @@ import AddWorkoutScreen from './subscreens/workouts/AddWorkoutScreen'
 import WorkoutGuide from './subscreens/workouts/WorkoutGuide'
 import EditWorkoutScreen from './subscreens/workouts/EditWorkoutScreen'
 import WorkoutsListScreen from './subscreens/workouts/WorkoutsListScreen'
-import GroupManagerScreen from './subscreens/workouts/GroupManagerScreen'
 import AddGroupScreen from './subscreens/workouts/AddGroupScreen'
 
 const Stack = createNativeStackNavigator();
@@ -12,7 +11,6 @@ const Stack = createNativeStackNavigator();
 function WorkoutsNavigator() {
   return (
     <Stack.Navigator initialRouteName="WorkoutsList">
-      <Stack.Screen name="GroupManager" component={GroupManagerScreen} options={{ headerShown: false }} />
       <Stack.Screen name="WorkoutsList" component={WorkoutsListScreen} options={{ headerShown: false }} />
       <Stack.Screen name="AddWorkout" component={AddWorkoutScreen} options={{ headerShown: false }} />
       <Stack.Screen name="EditWorkout" component={EditWorkoutScreen} options={{ headerShown: false }} />

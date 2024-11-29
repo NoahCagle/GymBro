@@ -2,13 +2,12 @@ import { View, ScrollView, ActivityIndicator, Text } from 'react-native'
 import React, { useCallback, useState } from 'react'
 import { FAB } from '@rneui/themed'
 import { useFocusEffect } from '@react-navigation/native'
-import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore'
+import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import { globalStyles, globalStyleVariables } from '../../../../styles/styles'
 import WorkoutListItem from '../../../../components/workouts/WorkoutListItem'
 import { auth, db } from '../../../../firebase/FirebaseConfig'
 import Collapsible from 'react-native-collapsible'
 import { TouchableOpacity } from 'react-native'
-import { Button } from '@rneui/base'
 
 function WorkoutsListScreen({ navigation }) {
     const [loading, setLoading] = useState(false);
@@ -123,7 +122,7 @@ function WorkoutsListScreen({ navigation }) {
             <FAB
                 visible={true}
                 placement='left'
-                title={"+   Add Group"}
+                title={"+   Create Group"}
                 color={globalStyleVariables.fabColor}
                 onPress={() => navigation.navigate("AddGroup")}
             />
