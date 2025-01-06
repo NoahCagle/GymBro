@@ -5,25 +5,27 @@ import { TouchableOpacity } from 'react-native';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../../../../firebase/FirebaseConfig';
 
-function AddWeight({ navigation }) {
-    const [weight, setWeight] = useState("");
+function LogCardio({ navigation }) {
+    const [type, setType] = useState("");
+    const [time, setTime] = useState("");
+    const [caloriesBurned, setCaloriesBurned] = useState("");
     const [loading, setLoading] = useState(false);
     const date = new Date().toLocaleDateString();
-    const docRef = doc(db, "weightTracker", auth.currentUser.uid);
+    const docRef = doc(db, "cardioTracker", auth.currentUser.uid);
 
     const addData = async () => {
-        if (weight == "") alert("Your weight field is empty!");
+        if (type == "" || time == "" || caloriesBurned == "") alert("Make sure you've filled out everything before submitting!");
         else {
             setLoading(true);
             try {
                 const snapshot = await getDoc(docRef);
                 if (snapshot.exists()) {
-                    let toLog = { weight: parseFloat(weight), date: date };
-                    let weights = snapshot.data().weights;
-                    weights = [...weights, toLog];
-                    await updateDoc(docRef, { weights: weights });
+                    let toLog = { type: type, time: parseFloat(time), caloriesBurned: caloriesBurned, date: date };
+                    let sessions = snapshot.data().sessions;
+                    sessions = [...sessions, toLog];
+                    await updateDoc(docRef, { sessions: sessions });
                 } else {
-                    let toLog = { weights: [{ weight: parseFloat(weight), date: date }] };
+                    let toLog = { sessions: [{ type: type, time: parseFloat(time), caloriesBurned: caloriesBurned, date: date }] };
                     await setDoc(docRef, toLog);
                 }
 
@@ -44,15 +46,17 @@ function AddWeight({ navigation }) {
     return (
         <View style={globalStyles.container}>
             <KeyboardAvoidingView>
-                <Text style={globalStyles.screenTitle}>Add Weigh-In</Text>
-                <Text style={globalStyles.screenSubtitle}>Add your weight for {date}</Text>
+                <Text style={globalStyles.screenTitle}>Log Cardio</Text>
+                <Text style={globalStyles.screenSubtitle}>Log your cardio for {date}</Text>
                 <View style={globalStyles.formWrapper}>
-                    <TextInput style={globalStyles.textInput} placeholder="Weight (lbs)" placeholderTextColor={globalStyleVariables.outlineColor} value={weight} onChangeText={(text) => setWeight(onlyNumbers(text))} />
+                    <TextInput style={globalStyles.textInput} placeholder="Type" placeholderTextColor={globalStyleVariables.outlineColor} value={type} onChangeText={(text) => setType(text)} />
+                    <TextInput style={globalStyles.textInput} placeholder="Time (minutes)" placeholderTextColor={globalStyleVariables.outlineColor} value={time} onChangeText={(text) => setTime(onlyNumbers(text))} />
+                    <TextInput style={globalStyles.textInput} placeholder="Calories Burned" placeholderTextColor={globalStyleVariables.outlineColor} value={caloriesBurned} onChangeText={(text) => setCaloriesBurned(onlyNumbers(text))} />
                     {loading ? (<ActivityIndicator size='large' color={globalStyleVariables.textColor} />) :
                         (
                             <View style={globalStyles.rowSpacingWrapper}>
                                 <TouchableOpacity style={globalStyles.button} onPress={() => addData()}>
-                                    <Text style={globalStyles.buttonTitle}>Log Weight</Text>
+                                    <Text style={globalStyles.buttonTitle}>Log Cardio</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={globalStyles.button} onPress={() => navigation.goBack()}>
                                     <Text style={globalStyles.buttonTitle}>Cancel</Text>
@@ -66,4 +70,4 @@ function AddWeight({ navigation }) {
     )
 }
 
-export default AddWeight;
+export default LogCardio;

@@ -26,6 +26,12 @@ export const globalStyles = StyleSheet.create({
         fontStyle: 'italic',
         alignSelf: 'center',
     },
+    screenTitleCentered: {
+        color: globalStyleVariables.textColor,
+        fontSize: 24,
+        fontWeight: 'bold',
+        alignSelf: 'center',
+    },
     formTitle: {
         color: globalStyleVariables.textColor,
         fontSize: 24,
@@ -34,7 +40,7 @@ export const globalStyles = StyleSheet.create({
     },
     formSubtitle: {
         color: globalStyleVariables.textColor,
-        fontSize: 20,
+        fontSize: 16,
         textAlign: 'center',
         alignSelf: 'center',
         fontStyle: 'italic'
