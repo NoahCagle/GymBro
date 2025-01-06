@@ -21,28 +21,38 @@ function HomeNavigator({ navigation }) {
     }
 
     return (
-        <View style={globalStyles.container}>
+        <View style={[globalStyles.container, { justifyContent: 'center' }]}>
 
             <Text style={[globalStyles.screenTitleCentered, { fontSize: 36 }]}>Welcome</Text>
             <Text style={globalStyles.screenSubtitle}>What are we doing today?</Text>
 
-            <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("Workouts")}>
-                <Text style={globalStyles.formTitle}>Start a workout</Text>
-            </TouchableOpacity>
+            <View style={globalStyles.rowSpacingWrapper}>
 
-            <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("Cardio")}>
-                <Text style={globalStyles.formTitle}>Log cardio</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("Progress Tracker")}>
-                <Text style={globalStyles.formTitle}>Manage Progress</Text>
-            </TouchableOpacity>
-            
-            <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("Soreness Tracker")}>
-                <Text style={globalStyles.formTitle}>Log muscle soreness</Text>
-            </TouchableOpacity>
+                <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("Workouts")}>
+                    <Text style={globalStyles.buttonTitle}>Start a workout</Text>
+                </TouchableOpacity>
 
-            <Button title="Sign Out" onPress={() => logOut()} />
+                <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("Cardio")}>
+                    <Text style={globalStyles.buttonTitle}>Log cardio</Text>
+                </TouchableOpacity>
+
+            </View>
+
+            <View style={globalStyles.rowSpacingWrapper}>
+
+                <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("Progress Tracker")}>
+                    <Text style={globalStyles.buttonTitle}>Manage Progress</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("Soreness Tracker")}>
+                    <Text style={globalStyles.buttonTitle}>Log muscle soreness</Text>
+                </TouchableOpacity>
+
+            </View>
+
+            <View style={{ marginVertical: 20 }}>
+                <Button title="Sign Out" onPress={() => logOut()} />
+            </View>
         </View>
     )
 }
