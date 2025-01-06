@@ -29,11 +29,11 @@ function HomeNavigator({ navigation }) {
             <View style={globalStyles.rowSpacingWrapper}>
 
                 <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("Workouts")}>
-                    <Text style={globalStyles.buttonTitle}>Start a workout</Text>
+                    <Text style={globalStyles.buttonTitle}>Start a Workout</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("Cardio")}>
-                    <Text style={globalStyles.buttonTitle}>Log cardio</Text>
+                    <Text style={globalStyles.buttonTitle}>Log Cardio</Text>
                 </TouchableOpacity>
 
             </View>
@@ -44,9 +44,9 @@ function HomeNavigator({ navigation }) {
                     <Text style={globalStyles.buttonTitle}>Manage Progress</Text>
                 </TouchableOpacity>
 
-                <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("Soreness Tracker")}>
+                {/* <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("Soreness Tracker")}>
                     <Text style={globalStyles.buttonTitle}>Log muscle soreness</Text>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
 
             </View>
 

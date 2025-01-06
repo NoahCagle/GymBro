@@ -12,6 +12,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './firebase/FirebaseConfig';
 import SorenessTrackerNavigator from './screens/main/SorenessTrackerNavigator';
 import CardioTrackerNavigator from './screens/main/CardioTrackerNavigator';
+import SleepTrackerNavigator from './screens/main/SleepTrackerNavigator';
 
 const Drawer = createDrawerNavigator();
 const CoreStack = createNativeStackNavigator();
@@ -24,7 +25,8 @@ function Authenticated() {
         <Drawer.Screen name="Workouts" component={WorkoutsNavigator} options={globalStyles.drawerStyles.mainScreenOptions} />
         <Drawer.Screen name="Cardio" component={CardioTrackerNavigator} options={globalStyles.drawerStyles.mainScreenOptions} />
         <Drawer.Screen name="Progress Tracker" component={ProgressTrackerNavigator} options={globalStyles.drawerStyles.mainScreenOptions} />
-        <Drawer.Screen name="Soreness Tracker" component={SorenessTrackerNavigator} options={globalStyles.drawerStyles.mainScreenOptions} />
+        <Drawer.Screen name="Sleep Tracker" component={SleepTrackerNavigator} options={globalStyles.drawerStyles.mainScreenOptions} />
+        {/* <Drawer.Screen name="Soreness Tracker" component={SorenessTrackerNavigator} options={globalStyles.drawerStyles.mainScreenOptions} /> */}
       </Drawer.Navigator>
     </View>
   );
