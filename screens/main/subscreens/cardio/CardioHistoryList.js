@@ -1,5 +1,5 @@
-import { View, Text } from 'react-native'
-import React, { useState } from 'react'
+import { View, Text, ActivityIndicator } from 'react-native'
+import React, { useCallback, useState } from 'react'
 import { globalStyles, globalStyleVariables } from '../../../../styles/styles';
 import { FAB } from '@rneui/base';
 import { useFocusEffect } from '@react-navigation/native';
@@ -8,40 +8,47 @@ import { auth, db } from '../../../../firebase/FirebaseConfig';
 
 function CardioHistoryList({ navigation }) {
     const [sessions, setSessions] = useState([]);
+    const [loading, setLoading] = useState(false);
     const docRef = doc(db, "cardioTracker", auth.currentUser.uid);
 
-    useFocusEffect(() => {
-        const loadData = async () => {
-            try {
-                const snapshot = await getDoc(docRef);
-                if (snapshot.exists()) {
-                    const data = snapshot.data();
-                    setSessions(data.sessions);
+    useFocusEffect(
+        useCallback(() => {
+            const loadData = async () => {
+                setLoading(true);
+                try {
+                    const snapshot = await getDoc(docRef);
+                    if (snapshot.exists()) {
+                        const data = snapshot.data();
+                        setSessions(data.sessions);
+                    } else {
+                        setSessions([]);
+                    }
+                } catch (error) {
+                    alert("Failed to load cardio history: " + error.message);
                 }
-            } catch (error) {
-                alert("Failed to load cardio history: " + error.message);
+                setLoading(false);
             }
-        }
 
-        loadData();
+            loadData();
 
-    });
+        }, [])
+    );
 
     const listSessions = () => {
         if (sessions.length == 0) {
             return (
-                <Text style={globalStyles.screenSubtitle}>No sessions logged yet</Text>
+                <Text style={globalStyles.screenSubtitle}>No cardio sessions logged yet</Text>
             )
         } else {
             return (
                 <View>
                     {
-                        sessions.map((sessions, index) => {
+                        sessions.reverse().map((sessions, index) => {
                             return (
                                 <View key={index} style={globalStyles.formWrapper}>
-                                    <Text style={[globalStyles.formTitle, {textDecorationLine: 'underline'}]}>{sessions.date}: {sessions.type}</Text>
-                                    <Text style={globalStyles.formText}>{sessions.time} minutes</Text>
-                                    <Text style={globalStyles.formText}>{sessions.caloriesBurned} calories burned</Text>
+                                    <Text style={[globalStyles.formTitle, { textDecorationLine: 'underline' }]}>{sessions.date}: {sessions.typeName}</Text>
+                                    <Text style={globalStyles.formText}>+ Went for {sessions.time} minutes</Text>
+                                    <Text style={globalStyles.formText}>+ Burned {sessions.caloriesBurned} calories</Text>
                                 </View>
                             )
                         })
@@ -55,7 +62,7 @@ function CardioHistoryList({ navigation }) {
         <View style={globalStyles.container}>
             <Text style={globalStyles.screenTitle}>Cardio History</Text>
 
-            {
+            {loading ? (<ActivityIndicator size='large' color={globalStyleVariables.textColor} />) :
                 listSessions()
             }
 
