@@ -48,7 +48,7 @@ function WorkoutListItem(props) {
                         <TouchableOpacity style={globalStyles.button} onPress={() => confirmDeletion()}>
                             <Text style={globalStyles.buttonTitle}>Delete</Text>
                         </TouchableOpacity>
-                        <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("HistoricalReview", {workoutId: id, workoutName: name})}>
+                        <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("HistoricalReview", { workoutObj: { name: name, weight: weight, sets: sets, reps: reps, group: group, id: id } })}>
                             <Text style={globalStyles.buttonTitle}>History</Text>
                         </TouchableOpacity>
                     </View>

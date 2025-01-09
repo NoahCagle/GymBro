@@ -5,6 +5,7 @@ import { TouchableOpacity } from 'react-native';
 import { useFocusEffect, useRoute } from '@react-navigation/native';
 import { auth, db } from '../../../../firebase/FirebaseConfig';
 import { doc, getDoc } from 'firebase/firestore';
+import SetsListItem from '../../../../components/workouts/SetsListItem';
 
 function DayBreakdown({ navigation }) {
     const route = useRoute();
@@ -13,7 +14,7 @@ function DayBreakdown({ navigation }) {
     const [loading, setLoading] = useState(false);
     const [workoutsDoc, setWorkoutsDoc] = useState([]);
     const [sleepObj, setSleepObj] = useState({});
-    const [cardioSessions, setCardioSessions] = useState({});
+    const [cardioSessions, setCardioSessions] = useState({sessions: []});
     const [parsedData, setParsedData] = useState([]);
     const sleepTrackerDocRef = doc(db, "sleepTracker", auth.currentUser.uid);
     const cardioTrackerDocRef = doc(db, "cardioTracker", auth.currentUser.uid);
@@ -21,7 +22,6 @@ function DayBreakdown({ navigation }) {
     useFocusEffect(
         useCallback(() => {
             const loadWorkouts = async () => {
-                setLoading(true);
                 const workoutsDocRef = doc(db, "workouts", auth.currentUser.uid);
                 try {
                     const snapshot = await getDoc(workoutsDocRef);
@@ -30,7 +30,6 @@ function DayBreakdown({ navigation }) {
                 } catch (error) {
                     alert("Can't load workout data: " + error.message);
                 }
-                setLoading(false);
             }
 
             const loadSleepData = async () => {
@@ -38,7 +37,6 @@ function DayBreakdown({ navigation }) {
                     const snapshot = await getDoc(sleepTrackerDocRef);
                     const data = snapshot.data();
                     setSleepObj(getSleepObj(data.logs));
-                    console.log(getSleepObj(data.logs));
                 } catch (error) {
                     alert("Can't load sleep data: " + error.message);
                 }
@@ -49,15 +47,18 @@ function DayBreakdown({ navigation }) {
                     const snapshot = await getDoc(cardioTrackerDocRef);
                     const data = snapshot.data();
                     setCardioSessions(getCardioSessions(data.sessions));
-                    console.log(getCardioSessions(data.sessions));
                 } catch (error) {
                     alert("Can't load sleep data: " + error.message);
                 }
             }
 
+            setLoading(true);
+
             loadWorkouts();
             loadSleepData();
             loadCardioData();
+
+            setLoading(false);
 
         }, [])
     )
@@ -120,126 +121,14 @@ function DayBreakdown({ navigation }) {
         return ret;
     }
 
-    // computes average reps from a list of sets
-    const averageReps = (wkout) => {
-        let ret = 0;
-        for (let i = 0; i < wkout.sets.length; i++) {
-            ret += wkout.sets[i].reps;
-        }
-        ret = ret / wkout.sets.length;
-        return Math.round(ret);
-    }
-
-    // computes average weight from a list of sets
-    const averageWeight = (wkout) => {
-        let ret = 0;
-        for (let i = 0; i < wkout.sets.length; i++) {
-            ret += wkout.sets[i].weight;
-        }
-        ret = ret / wkout.sets.length;
-        return Math.round(ret);
-    }
-
-    // used in returnBody to add a plus symbol in front of values that are positive
-    const plusMinus = (input) => {
-        if (input > 0) return '+' + input;
-        return input;
-    }
-
     const returnBody = () => {
-        if (Platform.OS == 'web') {
-            return (
-                <View style={{ marginVertical: 5 }}>
-                    {
-                        parsedData.map((wkout, index) => {
-                            return (
-                                <View key={index} style={globalStyles.formWrapper}>
-                                    <View style={globalStyles.rowSpacingWrapper}>
-                                        <View>
-                                            <Text style={[globalStyles.formTitle, { textDecorationLine: 'underline' }]}>{getWorkoutById(wkout.workoutId).name}</Text>
-                                            <Text style={globalStyles.formSubtitle}>{wkout.sets.length} sets</Text>
-                                            {
-                                                wkout.sets.map((set, index) => {
-                                                    return (
-                                                        <View key={index}>
-                                                            <Text style={globalStyles.formText}>{set.reps} reps at {set.weight} lbs</Text>
-                                                        </View>
-                                                    )
-                                                })
-                                            }
-                                        </View>
-                                        <View>
-                                            <Text style={[globalStyles.formSubtitle, { textDecorationLine: 'underline' }]}>Mathematical Analysis</Text>
-                                            <View style={globalStyles.rowSpacingWrapper}>
-                                                <Text style={globalStyles.formText}>Avg Reps: {averageReps(wkout)} reps</Text>
-                                                <Text style={globalStyles.formText}>Goal: {getWorkoutById(wkout.workoutId).reps} reps</Text>
-                                            </View>
-                                            <View style={globalStyles.rowSpacingWrapper}>
-                                                <Text style={globalStyles.formText}>Avg Weight: {averageWeight(wkout)} lbs</Text>
-                                                <Text style={globalStyles.formText}>Goal: {getWorkoutById(wkout.workoutId).weight} lbs</Text>
-                                            </View>
-                                            <Text style={[globalStyles.formSubtitle, { textDecorationLine: 'underline' }]}>Avg To Goal Difference</Text>
-                                            <View style={globalStyles.rowSpacingWrapper}>
-                                                <Text style={globalStyles.formText}>Reps: {plusMinus(averageReps(wkout) - getWorkoutById(wkout.workoutId).reps)} reps</Text>
-                                                <Text style={globalStyles.formText}>Weight: {plusMinus(averageWeight(wkout) - getWorkoutById(wkout.workoutId).weight)} lbs</Text>
-                                            </View>
-
-
-                                        </View>
-                                    </View>
-                                    <View style={globalStyles.rowSpacingWrapper}>
-                                        <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("EditWorkout", { name: getWorkoutById(wkout.workoutId).name, weight: getWorkoutById(wkout.workoutId).weight, sets: getWorkoutById(wkout.workoutId).sets, reps: getWorkoutById(wkout.workoutId).reps, id: getWorkoutById(wkout.workoutId).id, })}>
-                                            <Text style={globalStyles.buttonTitle}>Edit Workout</Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                </View>
-                            )
-                        })
-                    }
-                </View>
-            )
-        }
         return (
             <View style={{ marginVertical: 5 }}>
                 {
                     parsedData.map((wkout, index) => {
+                        const workoutObj = getWorkoutById(wkout.workoutId);
                         return (
-                            <View key={index} style={globalStyles.formWrapper}>
-                                <Text style={[globalStyles.formTitle, { textDecorationLine: 'underline' }]}>{getWorkoutById(wkout.workoutId).name}</Text>
-                                <Text style={globalStyles.formSubtitle}>{wkout.sets.length} sets</Text>
-                                {
-                                    wkout.sets.map((set, index) => {
-                                        return (
-                                            <View key={index}>
-                                                <Text style={globalStyles.formText}>{set.reps} reps at {set.weight} lbs</Text>
-                                            </View>
-                                        )
-                                    })
-                                }
-                                <View>
-                                    <Text style={[globalStyles.formSubtitle, { textDecorationLine: 'underline' }]}>Mathematical Analysis</Text>
-                                    <View style={globalStyles.rowSpacingWrapper}>
-                                        <Text style={globalStyles.formText}>Avg Reps: {averageReps(wkout)} reps</Text>
-                                        <Text style={globalStyles.formText}>Goal: {getWorkoutById(wkout.workoutId).reps} reps</Text>
-                                    </View>
-                                    <View style={globalStyles.rowSpacingWrapper}>
-                                        <Text style={globalStyles.formText}>Avg Weight: {averageWeight(wkout)} lbs</Text>
-                                        <Text style={globalStyles.formText}>Goal: {getWorkoutById(wkout.workoutId).weight} lbs</Text>
-                                    </View>
-                                    <Text style={[globalStyles.formSubtitle, { textDecorationLine: 'underline' }]}>Avg To Goal Difference</Text>
-                                    <View style={globalStyles.rowSpacingWrapper}>
-                                        <Text style={globalStyles.formText}>Reps: {plusMinus(averageReps(wkout) - getWorkoutById(wkout.workoutId).reps)} reps</Text>
-                                        <Text style={globalStyles.formText}>Weight: {plusMinus(averageWeight(wkout) - getWorkoutById(wkout.workoutId).weight)} lbs</Text>
-                                    </View>
-
-                                    <View style={globalStyles.rowSpacingWrapper}>
-                                        <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("EditWorkout", { name: getWorkoutById(wkout.workoutId).name, weight: getWorkoutById(wkout.workoutId).weight, sets: getWorkoutById(wkout.workoutId).sets, reps: getWorkoutById(wkout.workoutId).reps, id: getWorkoutById(wkout.workoutId).id, })}>
-                                            <Text style={globalStyles.buttonTitle}>Edit Workout</Text>
-                                        </TouchableOpacity>
-                                    </View>
-
-                                </View>
-                            </View>
+                            <SetsListItem key={index} workoutData={workoutObj} sessionData={wkout} header={workoutObj.name} navigation={navigation} />
                         )
                     })
                 }{

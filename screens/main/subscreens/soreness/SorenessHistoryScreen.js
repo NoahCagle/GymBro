@@ -56,7 +56,7 @@ function SorenessHistoryScreen({ navigation }) {
             return (
                 <ScrollView>
                     {
-                        logs.map((log, index) => {
+                        logs.reverse().map((log, index) => {
                             return (
                                 <View key={index} style={globalStyles.formWrapper}>
                                     <Text style={[globalStyles.formTitle, { textDecorationLine: 'underline' }]}>{log.date}</Text>
