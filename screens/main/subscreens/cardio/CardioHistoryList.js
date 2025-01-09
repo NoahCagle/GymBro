@@ -5,6 +5,7 @@ import { FAB } from '@rneui/base';
 import { useFocusEffect } from '@react-navigation/native';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../../../../firebase/FirebaseConfig';
+import CardioListItem from '../../../../components/workouts/CardioListItem';
 
 function CardioHistoryList({ navigation }) {
     const [sessions, setSessions] = useState([]);
@@ -43,13 +44,9 @@ function CardioHistoryList({ navigation }) {
             return (
                 <View>
                     {
-                        sessions.reverse().map((sessions, index) => {
+                        sessions.reverse().map((session, index) => {
                             return (
-                                <View key={index} style={globalStyles.formWrapper}>
-                                    <Text style={[globalStyles.formTitle, { textDecorationLine: 'underline' }]}>{sessions.date}: {sessions.typeName}</Text>
-                                    <Text style={globalStyles.formText}>+ Went for {sessions.time} minutes</Text>
-                                    <Text style={globalStyles.formText}>+ Burned {sessions.caloriesBurned} calories</Text>
-                                </View>
+                                <CardioListItem key={index} session={session} headerPrefix={session.date + ": "} />
                             )
                         })
                     }

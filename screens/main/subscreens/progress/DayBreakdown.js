@@ -6,6 +6,7 @@ import { useFocusEffect, useRoute } from '@react-navigation/native';
 import { auth, db } from '../../../../firebase/FirebaseConfig';
 import { doc, getDoc } from 'firebase/firestore';
 import SetsListItem from '../../../../components/workouts/SetsListItem';
+import CardioListItem from '../../../../components/workouts/CardioListItem';
 
 function DayBreakdown({ navigation }) {
     const route = useRoute();
@@ -14,7 +15,7 @@ function DayBreakdown({ navigation }) {
     const [loading, setLoading] = useState(false);
     const [workoutsDoc, setWorkoutsDoc] = useState([]);
     const [sleepObj, setSleepObj] = useState({});
-    const [cardioSessions, setCardioSessions] = useState({sessions: []});
+    const [cardioSessions, setCardioSessions] = useState({ sessions: [] });
     const [parsedData, setParsedData] = useState([]);
     const sleepTrackerDocRef = doc(db, "sleepTracker", auth.currentUser.uid);
     const cardioTrackerDocRef = doc(db, "cardioTracker", auth.currentUser.uid);
@@ -124,6 +125,7 @@ function DayBreakdown({ navigation }) {
     const returnBody = () => {
         return (
             <View style={{ marginVertical: 5 }}>
+                <Text style={globalStyles.screenSubtitle}>{sleepObj == null ? "No sleep data recorded for this date" : "Running on " + sleepObj.hours + " hours of sleep"}</Text>
                 {
                     parsedData.map((wkout, index) => {
                         const workoutObj = getWorkoutById(wkout.workoutId);
@@ -133,13 +135,9 @@ function DayBreakdown({ navigation }) {
                     })
                 }{
                     cardioSessions.sessions.length == 0 ? (<Text style={globalStyles.screenSubtitle}>No cardio recorded for this date</Text>) :
-                        cardioSessions.sessions.map((session, i) => {
+                        cardioSessions.sessions.map((session, index) => {
                             return (
-                                <View key={i} style={globalStyles.formWrapper}>
-                                    <Text style={[globalStyles.formTitle, { textDecorationLine: 'underline' }]}>Cardio: {session.typeName}</Text>
-                                    <Text style={globalStyles.formText}>+ Went for {session.time} minutes</Text>
-                                    <Text style={globalStyles.formText}>+ Burned {session.caloriesBurned} calories</Text>
-                                </View>
+                                <CardioListItem key={index} session={session} headerPrefix={"Cardio: "} />
                             )
                         })
 
@@ -156,10 +154,6 @@ function DayBreakdown({ navigation }) {
                     <Text style={globalStyles.screenTitle}>{date.date}</Text>
                     <Text style={globalStyles.screenSubtitle}>Detailed Breakdown</Text>
                 </View>
-                {
-                    sleepObj == null ? (<Text style={globalStyles.screenSubtitle}>No sleep data recorded</Text>) :
-                        (<Text style={globalStyles.screenSubtitle}>Running on {sleepObj.hours} hours of sleep</Text>)
-                }
                 {
                     loading ? (<ActivityIndicator size="large" color={globalStyleVariables.textColor} />)
                         :
