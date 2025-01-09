@@ -12,7 +12,11 @@ function DayBreakdown({ navigation }) {
     const sets = date.sets;
     const [loading, setLoading] = useState(false);
     const [workoutsDoc, setWorkoutsDoc] = useState([]);
+    const [sleepObj, setSleepObj] = useState({});
+    const [cardioSessions, setCardioSessions] = useState({});
     const [parsedData, setParsedData] = useState([]);
+    const sleepTrackerDocRef = doc(db, "sleepTracker", auth.currentUser.uid);
+    const cardioTrackerDocRef = doc(db, "cardioTracker", auth.currentUser.uid);
 
     useFocusEffect(
         useCallback(() => {
@@ -28,7 +32,33 @@ function DayBreakdown({ navigation }) {
                 }
                 setLoading(false);
             }
+
+            const loadSleepData = async () => {
+                try {
+                    const snapshot = await getDoc(sleepTrackerDocRef);
+                    const data = snapshot.data();
+                    setSleepObj(getSleepObj(data.logs));
+                    console.log(getSleepObj(data.logs));
+                } catch (error) {
+                    alert("Can't load sleep data: " + error.message);
+                }
+            }
+
+            const loadCardioData = async () => {
+                try {
+                    const snapshot = await getDoc(cardioTrackerDocRef);
+                    const data = snapshot.data();
+                    setCardioSessions(getCardioSessions(data.sessions));
+                    console.log(getCardioSessions(data.sessions));
+                } catch (error) {
+                    alert("Can't load sleep data: " + error.message);
+                }
+            }
+
             loadWorkouts();
+            loadSleepData();
+            loadCardioData();
+
         }, [])
     )
 
@@ -56,6 +86,25 @@ function DayBreakdown({ navigation }) {
                 break;
             }
         }
+        return ret;
+    }
+
+    // searches sleep tracker for data corresponding to this date
+    const getSleepObj = (sleepData) => {
+        let ret = null;
+        sleepData.forEach((log, i) => {
+            if (log.date == date.date) ret = log;
+        });
+
+        return ret;
+
+    }
+
+    const getCardioSessions = (cardioData) => {
+        let ret = { sessions: [] };
+        cardioData.forEach((session, i) => {
+            if (session.date == date.date) ret.sessions.push(session);
+        })
         return ret;
     }
 
@@ -138,11 +187,11 @@ function DayBreakdown({ navigation }) {
 
                                         </View>
                                     </View>
-                                            <View style={globalStyles.rowSpacingWrapper}>
-                                                <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("EditWorkout", { name: getWorkoutById(wkout.workoutId).name, weight: getWorkoutById(wkout.workoutId).weight, sets: getWorkoutById(wkout.workoutId).sets, reps: getWorkoutById(wkout.workoutId).reps, id: getWorkoutById(wkout.workoutId).id, })}>
-                                                    <Text style={globalStyles.buttonTitle}>Edit Workout</Text>
-                                                </TouchableOpacity>
-                                            </View>
+                                    <View style={globalStyles.rowSpacingWrapper}>
+                                        <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("EditWorkout", { name: getWorkoutById(wkout.workoutId).name, weight: getWorkoutById(wkout.workoutId).weight, sets: getWorkoutById(wkout.workoutId).sets, reps: getWorkoutById(wkout.workoutId).reps, id: getWorkoutById(wkout.workoutId).id, })}>
+                                            <Text style={globalStyles.buttonTitle}>Edit Workout</Text>
+                                        </TouchableOpacity>
+                                    </View>
                                 </View>
                             )
                         })
@@ -193,6 +242,18 @@ function DayBreakdown({ navigation }) {
                             </View>
                         )
                     })
+                }{
+                    cardioSessions.sessions.length == 0 ? (<Text style={globalStyles.screenSubtitle}>No cardio recorded for this date</Text>) :
+                        cardioSessions.sessions.map((session, i) => {
+                            return (
+                                <View key={i} style={globalStyles.formWrapper}>
+                                    <Text style={[globalStyles.formTitle, { textDecorationLine: 'underline' }]}>Cardio: {session.typeName}</Text>
+                                    <Text style={globalStyles.formText}>+ Went for {session.time} minutes</Text>
+                                    <Text style={globalStyles.formText}>+ Burned {session.caloriesBurned} calories</Text>
+                                </View>
+                            )
+                        })
+
                 }
             </View>
         )
@@ -206,6 +267,10 @@ function DayBreakdown({ navigation }) {
                     <Text style={globalStyles.screenTitle}>{date.date}</Text>
                     <Text style={globalStyles.screenSubtitle}>Detailed Breakdown</Text>
                 </View>
+                {
+                    sleepObj == null ? (<Text style={globalStyles.screenSubtitle}>No sleep data recorded</Text>) :
+                        (<Text style={globalStyles.screenSubtitle}>Running on {sleepObj.hours} hours of sleep</Text>)
+                }
                 {
                     loading ? (<ActivityIndicator size="large" color={globalStyleVariables.textColor} />)
                         :

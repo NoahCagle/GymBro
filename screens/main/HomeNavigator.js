@@ -1,4 +1,4 @@
-import { Platform, Text, TouchableOpacity, View } from 'react-native'
+import { Image, Platform, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
 import { globalStyles } from '../../styles/styles'
 import { Button } from 'react-native'
@@ -23,7 +23,8 @@ function HomeNavigator({ navigation }) {
     return (
         <View style={[globalStyles.container, { justifyContent: 'center' }]}>
 
-            <Text style={[globalStyles.screenTitleCentered, { fontSize: 36 }]}>Welcome</Text>
+        <Image style={{width: 256, height: 128, alignSelf: 'center'}} source={require('../../assets/logo.png')}/>
+
             <Text style={globalStyles.screenSubtitle}>What are we doing today?</Text>
 
             <View style={globalStyles.rowSpacingWrapper}>
@@ -44,9 +45,9 @@ function HomeNavigator({ navigation }) {
                     <Text style={globalStyles.buttonTitle}>Manage Progress</Text>
                 </TouchableOpacity>
 
-                {/* <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("Soreness Tracker")}>
-                    <Text style={globalStyles.buttonTitle}>Log muscle soreness</Text>
-                </TouchableOpacity> */}
+                <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("Sleep Tracker")}>
+                    <Text style={globalStyles.buttonTitle}>Log Sleep</Text>
+                </TouchableOpacity>
 
             </View>
 

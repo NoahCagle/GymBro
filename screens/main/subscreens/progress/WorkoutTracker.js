@@ -77,7 +77,7 @@ function WorkoutTracker(props) {
                 <View key={i} style={{ marginVertical: 5 }}>
                     <Text key={i} style={[globalStyles.formTitle, { textDecorationLine: "underline" }]}>{date.date}</Text>
                     <View style={globalStyles.rowSpacingWrapper}>
-                        <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("DayBreakdown", { date: parsedData.dates[i] })}>
+                        <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("DayBreakdown", { date: date })}>
                             <Text style={globalStyles.buttonTitle}>Detailed Breakdown -{'>'}</Text>
                         </TouchableOpacity>
                     </View>
