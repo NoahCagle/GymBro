@@ -1,6 +1,6 @@
 import { Image, Platform, Text, TouchableOpacity, View } from 'react-native'
 import React, { useEffect, useRef, useState } from 'react'
-import { globalStyles } from '../../styles/styles'
+import ImageLogo, { globalStyles } from '../../styles/styles'
 import { Button } from 'react-native'
 import { auth } from '../../firebase/FirebaseConfig'
 import { signOut } from 'firebase/auth'
@@ -23,7 +23,7 @@ function HomeNavigator({ navigation }) {
     return (
         <View style={[globalStyles.container, { justifyContent: 'center' }]}>
 
-        <Image style={{width: 256, height: 128, alignSelf: 'center'}} source={require('../../assets/logo.png')}/>
+        <ImageLogo width={256} height={128}/>
 
             <Text style={globalStyles.screenSubtitle}>What are we doing today?</Text>
 

@@ -1,4 +1,4 @@
-import { Platform, StyleSheet } from "react-native";
+import { Image, Platform, StyleSheet } from "react-native";
 
 export const globalStyleVariables = {
     textColor: '#fff',
@@ -7,6 +7,14 @@ export const globalStyleVariables = {
     fabColor: '#223333',
     buttonColor: '#223333',
     outlineColor: '#334444',
+}
+
+export default function ImageLogo(props) {
+    const w = props.width;
+    const h = props.height;
+    return (
+        <Image style={{width: w, height: h, alignSelf: 'center'}} source={require('../assets/logo.png')}/>
+    )
 }
 
 export const globalStyles = StyleSheet.create({
@@ -134,13 +142,13 @@ export const globalStyles = StyleSheet.create({
             drawerStyle: {
                 backgroundColor: globalStyleVariables.formBgColor
             },
-            drawerType: Platform.OS == 'web' ? 'permanent' : 'front',
+            drawerType: Platform.OS == 'web' ? 'permanent' : 'slide',
             drawerItemStyle: {
-                borderRadius: 25,
+                borderRadius: 5,
             },
             drawerLabelStyle: {
-                textAlign: 'center',
                 color: globalStyleVariables.textColor,
+                marginHorizontal: 5,
             },
             headerTintColor: globalStyleVariables.textColor,
             headerTitleAlign: 'center'
