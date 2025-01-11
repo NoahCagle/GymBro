@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { StyleSheet, Text, View } from 'react-native';
+import { Button, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
 import HomeNavigator from './screens/main/HomeNavigator';
 import WorkoutsNavigator from './screens/main/WorkoutsNavigator';
@@ -8,21 +8,38 @@ import ProgressTrackerNavigator from './screens/main/ProgressTrackerNavigator';
 import ImageLogo, { globalStyles } from './styles/styles';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Authentication from './screens/authentication/Authentication';
-import { onAuthStateChanged } from 'firebase/auth';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebase/FirebaseConfig';
 import SorenessTrackerNavigator from './screens/main/SorenessTrackerNavigator';
 import CardioTrackerNavigator from './screens/main/CardioTrackerNavigator';
 import SleepTrackerNavigator from './screens/main/SleepTrackerNavigator';
+import * as SecureStore from 'expo-secure-store';
 
 const Drawer = createDrawerNavigator();
 const CoreStack = createNativeStackNavigator();
 
 function CustomDrawer(props) {
+
+  const logOut = async () => {
+    if (Platform.OS != 'web') {
+      const savedEmail = await SecureStore.getItemAsync("gynBroEmail");
+      const savedPassword = await SecureStore.getItemAsync("gymBroPassword");
+      if (savedEmail) await SecureStore.deleteItemAsync("gymBroEmail");
+      if (savedPassword) await SecureStore.deleteItemAsync("gymBroPassword");
+    }
+    await signOut(auth);
+  }
+
   return (
     <DrawerContentScrollView {...props}>
       <ImageLogo width={200} height={100} />
-      <DrawerItemList {...props}/>
-      <DrawerItem label={"Fuck"}/>
+      <Text style={globalStyles.formSubtitle}>{auth.currentUser.email}</Text>
+      <View style={globalStyles.rowSpacingWrapper}>
+        <TouchableOpacity style={globalStyles.button} onPress={() => logOut()}>
+          <Text style={globalStyles.buttonTitle}>Sign Out</Text>
+        </TouchableOpacity>
+      </View>
+      <DrawerItemList {...props} />
     </DrawerContentScrollView>
   )
 }
