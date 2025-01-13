@@ -47,6 +47,13 @@ function DateReviewListItem(props) {
                     )
                 })
             }
+            {
+                dateData.cardioSessions.map((session, index) => {
+                    return (
+                        <CollapsibleCardioItem key={index} data={session} />
+                    )
+                })
+            }
         </View>
     )
 }
@@ -67,6 +74,22 @@ function CollapsibleSetList(props) {
                         )
                     })
                 }
+            </Collapsible>
+        </View>
+    )
+}
+
+function CollapsibleCardioItem(props) {
+    const [collapsed, setCollapsed] = useState(true);
+    const data = props.data;
+    return (
+        <View style={globalStyles.collapsibleWrapper}>
+            <TouchableOpacity onPress={() => setCollapsed(!collapsed)}>
+                <Text style={[globalStyles.formSubtitle, { textAlign: 'left', alignSelf: 'left' }]}>{collapsed ? "▼" : "▲"} Cardio: {data.typeName}</Text>
+            </TouchableOpacity>
+            <Collapsible collapsed={collapsed}>
+                <Text style={[globalStyles.formText]}>- Went for {data.time} minutes</Text>
+                <Text style={[globalStyles.formText]}>- Burned {data.caloriesBurned} calories</Text>
             </Collapsible>
         </View>
     )

@@ -9,17 +9,18 @@ import DateReviewListItem from '../../../../components/workouts/DateReviewListIt
 
 function WorkoutTracker(props) {
     const navigation = props.navigation;
-    const docRef = doc(db, "workoutTracker", auth.currentUser.uid);
+    const workoutDocRef = doc(db, "workoutTracker", auth.currentUser.uid);
+    const cardioDocRef = doc(db, "cardioTracker", auth.currentUser.uid);
     const [loading, setLoading] = useState(false);
     const [parsedData, setParsedData] = useState([]);
     const [docExists, setDocExists] = useState(false);
 
     useFocusEffect(
         useCallback(() => {
-            const loadData = async () => {
+            const loadWeightTrainingData = async () => {
                 setLoading(true);
                 try {
-                    const snapshot = await getDoc(docRef);
+                    const snapshot = await getDoc(workoutDocRef);
                     if (snapshot.exists()) {
                         setDocExists(true);
 
@@ -32,10 +33,25 @@ function WorkoutTracker(props) {
                 } catch (error) {
                     alert("Failed to load workouts: " + error.message)
                 }
+            }
+
+            const loadCardioData = async () => {
+                try {
+                    const snapshot = await getDoc(cardioDocRef);
+                    if (snapshot.exists()) {
+                        const data = snapshot.data();
+
+                        addCardioData(data.sessions);
+
+                    }
+                } catch (error) {
+                    alert("Failed to load workouts: " + error.message)
+                }
                 setLoading(false);
             }
 
-            loadData();
+            loadWeightTrainingData();
+            loadCardioData();
 
         }, [])
     )
@@ -54,7 +70,7 @@ function WorkoutTracker(props) {
         for (let i = 0; i < sets.length; i++) {
             let dateFound = dateExists(sets[i].date);
             if (dateFound == -1) {
-                parse.dates.push({ date: sets[i].date, sets: [sets[i]] });
+                parse.dates.push({ date: sets[i].date, sets: [sets[i]], cardioSessions: []});
             } else {
                 parse.dates[dateFound].sets.push(sets[i]);
             }
@@ -64,6 +80,21 @@ function WorkoutTracker(props) {
         parse.dates.reverse();
 
         return parse;
+
+    }
+
+    const addCardioData = (sessions) => {
+        let datesCopy = [...parsedData.dates];
+
+        for (let i = 0; i < sessions.length; i++) {
+            for (let j = 0; j < datesCopy.length; j++) {
+                if (sessions[i].date == datesCopy[j].date) {
+                    datesCopy[j].cardioSessions.push(sessions[i]);
+                }
+            }
+        }
+
+        setParsedData({dates: datesCopy});
 
     }
 
