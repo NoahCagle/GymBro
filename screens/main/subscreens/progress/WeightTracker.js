@@ -11,7 +11,7 @@ function WeightTracker(props) {
     const [loading, setLoading] = useState(false);
     const [docExists, setDocExists] = useState(false);
     const navigation = props.navigation;
-    const docRef = doc(db, "weightTracker", auth.currentUser.uid);
+    const docRef = doc(db, "dataTracker", auth.currentUser.uid);
 
     // I don't know exactly how this hook works, but it's the only way I've been able to make sure the data displayed on-screen is up to date
     useFocusEffect(
@@ -21,7 +21,8 @@ function WeightTracker(props) {
                 try {
                     const snapshot = await getDoc(docRef);
                     if (snapshot.exists()) {
-                        setWeights(snapshot.data().weights.reverse());
+                        const dates = snapshot.data().dates;
+                        setWeights(combineLogs(dates).reverse());
                         setDocExists(true);
                         setLoading(false);
                     } else {
@@ -36,26 +37,42 @@ function WeightTracker(props) {
         }, [])
     )
 
+    const combineLogs = (dates) => {
+        let ret = [];
+
+        for (let i = 0; i < dates.length; i++) {
+            ret = [...ret, ...dates[i].bodyWeightLogs];
+        }
+
+        return ret;
+    }
+
     const returnBody = () => {
         return (
-            <ScrollView>
-                <Text style={globalStyles.formTitle}>Complete History</Text>
-                {
-                    loading ? (<ActivityIndicator size='large' color={globalStyleVariables.textColor} />) :
-                        docExists && weights.length > 0 ?
-                            weights.map((weight, index) => {
-                                return (<Text key={index} style={globalStyles.formText}>{weight.date + ": " + weight.weight} lbs</Text>)
-                            })
-                            :
-                            (<Text style={globalStyles.formText}>No weigh-ins tracked yet!</Text>)
+            <View>
+                <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("AddWeight")}>
+                    <Text style={[globalStyles.buttonTitle, { textAlign: 'center' }]}>Conduct Weigh-In</Text>
+                </TouchableOpacity>
+                <View style={globalStyles.formWrapper}>
+                    <Text style={globalStyles.formTitle}>Complete History</Text>
+                    {
+                        loading ? (<ActivityIndicator size='large' color={globalStyleVariables.textColor} />) :
+                            docExists && weights.length > 0 ?
+                                weights.map((weight, index) => {
+                                    return (<Text key={index} style={globalStyles.formText}>{weight.date + ": " + weight.weight} lbs</Text>)
+                                })
+                                :
+                                (<Text style={globalStyles.formText}>No weigh-ins tracked yet!</Text>)
 
-                }
-            </ScrollView>
+                    }
+                </View>
+            </View>
         )
     }
 
     const returnChart = () => {
         if (!loading && docExists && weights.length > 0) {
+            const datapointsToChart = 5;
 
             const removeYear = (date) => {
                 return date.substring(0, date.length - 5);
@@ -92,16 +109,16 @@ function WeightTracker(props) {
             }
 
             const data = {
-                labels: lastXDates(6).reverse(),
+                labels: lastXDates(datapointsToChart).reverse(),
                 datasets: [
                     {
-                        data: lastXWeights(6).reverse()
+                        data: lastXWeights(datapointsToChart).reverse()
                     }
                 ]
             }
 
-            return (
-                <View>
+            if (weights.length >= datapointsToChart)
+                return (
                     <LineChart
                         data={data}
                         width={Dimensions.get("window").width * 0.9}
@@ -130,21 +147,18 @@ function WeightTracker(props) {
                             borderWidth: 2,
                             borderColor: globalStyleVariables.outlineColor
                         }}
-                    /><TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("AddWeight")}>
-                        <Text style={[globalStyles.buttonTitle, { textAlign: 'center' }]}>Conduct Weigh-In</Text>
-                    </TouchableOpacity>
-                </View>
-            )
+                    />
+                )
+            else
+                return (<Text style={globalStyles.screenSubtitle}>Not enough logs to chart yet!</Text>)
         }
     }
 
     return (
-        <View>
+        <ScrollView>
             {returnChart()}
-            <View style={globalStyles.formWrapper}>
-                {returnBody()}
-            </View>
-        </View>
+            {returnBody()}
+        </ScrollView>
     )
 
 }

@@ -10,7 +10,7 @@ import CardioListItem from '../../../../components/workouts/CardioListItem';
 function CardioHistoryList({ navigation }) {
     const [sessions, setSessions] = useState([]);
     const [loading, setLoading] = useState(false);
-    const docRef = doc(db, "cardioTracker", auth.currentUser.uid);
+    const docRef = doc(db, "dataTracker", auth.currentUser.uid);
 
     useFocusEffect(
         useCallback(() => {
@@ -20,7 +20,7 @@ function CardioHistoryList({ navigation }) {
                     const snapshot = await getDoc(docRef);
                     if (snapshot.exists()) {
                         const data = snapshot.data();
-                        setSessions(data.sessions);
+                        setSessions(combineLogs(data.dates));
                     } else {
                         setSessions([]);
                     }
@@ -34,6 +34,16 @@ function CardioHistoryList({ navigation }) {
 
         }, [])
     );
+
+    const combineLogs = (dates) => {
+        let ret = [];
+        for (let i = 0; i < dates.length; i++) {
+            if (dates[i].cardioLogs.length > 0) {
+                ret = [...ret, ...dates[i].cardioLogs];
+            }
+        }
+        return ret;
+    }
 
     const listSessions = () => {
         if (sessions.length == 0) {

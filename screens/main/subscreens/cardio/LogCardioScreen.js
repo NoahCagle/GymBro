@@ -6,6 +6,7 @@ import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../../../../firebase/FirebaseConfig';
 import { Picker } from '@react-native-picker/picker';
 import { useFocusEffect } from '@react-navigation/native';
+import { blankDate, cloneObject } from '../../../../data/DataStructures';
 
 function LogCardio({ navigation }) {
     const [type, setType] = useState(1);
@@ -14,21 +15,25 @@ function LogCardio({ navigation }) {
     const [typesList, setTypesList] = useState([]);
     const [loading, setLoading] = useState(false);
     const date = new Date().toLocaleDateString();
-    const docRef = doc(db, "cardioTracker", auth.currentUser.uid);
+    const workoutsDocRef = doc(db, "workouts", auth.currentUser.uid);
+    const dataDocRef = doc(db, "dataTracker", auth.currentUser.uid);
 
     useFocusEffect(
         useCallback(() => {
             const loadCardioTypes = async () => {
                 try {
-                    const snapshot = await getDoc(docRef);
+                    const snapshot = await getDoc(workoutsDocRef);
                     if (snapshot.exists()) {
-                        const types = snapshot.data().types;
-                        if (types.length == 0)
+                        const types = snapshot.data().cardioTypes;
+                        if (types.length == 0) {
                             setTypesList([{ name: "No Type", id: 1 }]);
+                            await updateDoc(workoutsDocRef, { cardioTypes: [{ name: "No Type", id: 1 }] });
+                        }
                         else
                             setTypesList(types);
                     } else {
                         setTypesList([{ name: "No Type", id: 1 }]);
+                        await setDoc(workoutsDocRef, { groups: [], workouts: [], cardioTypes: [{ name: "No Type", id: 1 }] });
                     }
                 } catch (error) {
                     alert("Failed to load cardio types list: " + error.message);
@@ -45,17 +50,28 @@ function LogCardio({ navigation }) {
         else {
             setLoading(true);
             try {
-                const snapshot = await getDoc(docRef);
+                const snapshot = await getDoc(dataDocRef);
                 if (snapshot.exists()) {
+                    const data = snapshot.data();
+                    let dates = [...data.dates];
+                    const dateIndex = findCurrentDateIndex(dates);
                     let typeName = getTypeName(type);
-                    let toLog = { typeId: type, typeName: typeName, time: parseFloat(time), caloriesBurned: caloriesBurned, date: date };
-                    let sessions = snapshot.data().sessions;
-                    sessions = [...sessions, toLog];
-                    await updateDoc(docRef, { sessions: sessions });
+                    let toLog = { typeId: type, typeName: typeName, time: parseFloat(time), caloriesBurned: parseFloat(caloriesBurned), date: date };
+                    if (dateIndex != -1) {
+                        dates[dateIndex].cardioLogs.push(toLog);
+                        await updateDoc(dataDocRef, { dates: dates });
+                    } else {
+                        let newDate = cloneObject(blankDate);
+                        newDate.cardioLogs.push(toLog);
+                        dates.push(newDate);
+                        await updateDoc(dataDocRef, { dates: dates });
+                    }
                 } else {
                     let typeName = getTypeName(type);
-                    let toLog = { types: typesList, sessions: [{ typeId: type, typeName: typeName, time: parseFloat(time), caloriesBurned: caloriesBurned, date: date }] };
-                    await setDoc(docRef, toLog);
+                    let toLog = { typeId: type, typeName: typeName, time: parseFloat(time), caloriesBurned: parseFloat(caloriesBurned), date: date };
+                    let newDate = cloneObject(blankDate);
+                    newDate.cardioLogs.push(toLog);
+                    await setDoc(dataDocRef, { dates: [newDate] });
                 }
 
                 navigation.goBack();
@@ -65,6 +81,19 @@ function LogCardio({ navigation }) {
             }
             setLoading(false);
         }
+    }
+
+    const findCurrentDateIndex = (dates) => {
+        let ret = -1;
+        for (let i = 0; i < dates.length; i++) {
+            if (dates[i].date == date) {
+                ret = i;
+                break;
+            }
+        }
+
+        return ret;
+
     }
 
     const getTypeName = (typeId) => {

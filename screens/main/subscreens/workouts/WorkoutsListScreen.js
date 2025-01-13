@@ -103,7 +103,7 @@ function WorkoutsListScreen({ navigation }) {
             <ScrollView>
                 {
                     loading ? (<ActivityIndicator size='large' color={globalStyleVariables.textColor} />) :
-                        docExists ?
+                        docExists && workouts.length > 0 ?
                             workoutsByGroup.map((group, index) => {
                                 if (group.workouts.length > 0)
                                     return (<CollapsibleGroup key={index} group={group} />)

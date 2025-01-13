@@ -6,6 +6,7 @@ import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../../../../firebase/FirebaseConfig';
 import { useFocusEffect } from '@react-navigation/native';
 import { Picker } from '@react-native-picker/picker';
+import { blankGroupsList, blankWorkoutsDoc, cloneObject } from '../../../../data/DataStructures';
 
 function AddWorkoutScreen({ navigation }) {
     const [wkoutName, setWkoutName] = useState("");
@@ -23,20 +24,19 @@ function AddWorkoutScreen({ navigation }) {
                 try {
                     const snapshot = await getDoc(docRef);
                     if (snapshot.exists()) {
-                        const gs = snapshot.data().groups;
-                        let temp = [];
-                        gs.map((group) => {
-                            temp.push(group);
-                        })
-                        setGroupsList(temp);
+                        const data = snapshot.data();
+                        setGroupsList(data.groups);
                     } else {
-                        setGroupsList([{ id: -1, name: "No Group" }])
+                        setGroupsList([...blankGroupsList]);
+                        await setDoc(docRef, cloneObject(blankWorkoutsDoc));
                     }
                 } catch (error) {
                     alert(error.message);
                 }
             }
+
             loadGroups();
+
         }, [])
     )
 
@@ -51,27 +51,31 @@ function AddWorkoutScreen({ navigation }) {
                 const snapshot = await getDoc(docRef);
                 if (snapshot.exists()) {
                     let workouts = snapshot.data().workouts;
-                    const nextId = workouts[workouts.length - 1].id + 1;
                     if (workoutNameAlreadyExists(workouts)) {
                         alert("Workout with that name already exists!")
                     } else {
+                        let nextId;
+                        if (workouts.length > 0)
+                            nextId = workouts[workouts.length - 1] + 1;
+                        else nextId = 0;
                         let toLog = { name: wkoutName, weight: parseFloat(weight), sets: parseFloat(sets), reps: parseFloat(reps), group: group, id: nextId };
                         workouts = [...workouts, toLog];
                         await updateDoc(docRef, { workouts: workouts });
                         navigation.goBack();
                     }
                 } else {
-                    let toLog = { workouts: [{ name: wkoutName, weight: parseFloat(weight), sets: parseFloat(sets), reps: parseFloat(reps), group: group, id: 0 }], groups: [{ id: -1, name: "No Group" }] };
-                    await setDoc(docRef, toLog);
-                    setLoading(false);
+                    let toLog = { name: wkoutName, weight: parseFloat(weight), sets: parseFloat(sets), reps: parseFloat(reps), group: group, id: 0 };
+                    let newDoc = cloneObject(blankWorkoutsDoc);
+                    newDoc.workouts.push(toLog);
+                    await setDoc(docRef, newDoc);
                     navigation.goBack();
                 }
 
 
             } catch (error) {
                 alert(error.message);
-                setLoading(false);
             }
+            setLoading(false);
         }
     }
 

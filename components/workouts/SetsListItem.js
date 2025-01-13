@@ -6,7 +6,6 @@ function SetsListItem(props) {
     const workoutData = props.workoutData;
     const sessionData = props.sessionData;
     const header = props.header;
-    const navigation = props.navigation;
 
     // computes average reps from a list of sets
     const averageReps = (wkout) => {
@@ -60,12 +59,6 @@ function SetsListItem(props) {
                 <View style={globalStyles.rowSpacingWrapper}>
                     <Text style={globalStyles.formText}>Difference: {plusMinus(averageReps(sessionData) - workoutData.reps)} reps</Text>
                     <Text style={globalStyles.formText}>Difference: {plusMinus(averageWeight(sessionData) - workoutData.weight)} lbs</Text>
-                </View>
-
-                <View style={globalStyles.rowSpacingWrapper}>
-                    <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("EditWorkout", { name: workoutData.name, weight: workoutData.weight, sets: workoutData.sets, reps: workoutData.reps, id: workoutData.id, })}>
-                        <Text style={globalStyles.buttonTitle}>Edit Workout</Text>
-                    </TouchableOpacity>
                 </View>
 
             </View>

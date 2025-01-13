@@ -7,6 +7,7 @@ function DateReviewListItem(props) {
     const dateData = props.dateData;
     const navigation = props.navigation;
 
+    // Organizes list of sets and groups them by their workoutId
     function separateSets() {
         let workouts = []; // {name: "", workoutId: -1, sets: []}
         for (let i = 0; i < dateData.sets.length; i++) {
@@ -36,7 +37,7 @@ function DateReviewListItem(props) {
         <View style={globalStyles.formWrapper}>
             <Text style={[globalStyles.formTitle, { textDecorationLine: 'underline' }]}>{dateData.date}</Text>
             <View style={globalStyles.rowSpacingWrapper}>
-                <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("DayBreakdown", { date: dateData })}>
+                <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("DayBreakdown", { date: dateData, organizedSets: organizedSets })}>
                     <Text style={globalStyles.buttonTitle}>Complete Breakdown</Text>
                 </TouchableOpacity>
             </View>
@@ -48,7 +49,7 @@ function DateReviewListItem(props) {
                 })
             }
             {
-                dateData.cardioSessions.map((session, index) => {
+                dateData.cardioLogs.map((session, index) => {
                     return (
                         <CollapsibleCardioItem key={index} data={session} />
                     )

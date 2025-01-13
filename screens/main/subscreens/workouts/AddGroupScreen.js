@@ -4,6 +4,7 @@ import { globalStyles, globalStyleVariables } from '../../../../styles/styles';
 import { TouchableOpacity } from 'react-native';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../../../../firebase/FirebaseConfig';
+import { blankWorkoutsDoc, cloneObject } from '../../../../data/DataStructures';
 
 function AddGroupScreen({ navigation }) {
     const [groupName, setGroupName] = useState("");
@@ -19,27 +20,30 @@ function AddGroupScreen({ navigation }) {
                 const snapshot = await getDoc(docRef);
                 if (snapshot.exists()) {
                     let groups = snapshot.data().groups;
-                    let nextId;
-                    if (groups.length == 0) {
-                        nextId = 0;
-                    } else {
-                       nextId = groups[groups.length - 1].id + 1;
-                    }
                     if (groupNameAlreadyExists(groups)) {
                         alert("Group with that name already exists!")
                     } else {
+                        if (groups.length == 0) {
+                            groups = [{ name: "No Group", id: 1 }];
+                        }
+                        let nextId = groups[groups.length - 1].id + 1;
                         let toLog = { name: groupName, id: nextId };
-                        groups = [...groups, toLog];
+                        groups.push(toLog);
                         await updateDoc(docRef, { groups: groups });
                         navigation.goBack();
                     }
+                } else {
+                    let newDoc = cloneObject(blankWorkoutsDoc);
+                    newDoc.groups.push({ name: groupName, id: 2 });
+                    await setDoc(docRef, newDoc);
+                    navigation.goBack();
                 }
 
 
             } catch (error) {
                 alert(error.message);
-                setLoading(false);
             }
+            setLoading(false);
         }
     }
 

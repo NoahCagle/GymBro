@@ -4,26 +4,38 @@ import { globalStyles, globalStyleVariables } from '../../../../styles/styles';
 import { TouchableOpacity } from 'react-native';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../../../../firebase/FirebaseConfig';
+import { blankDate, cloneObject } from '../../../../data/DataStructures';
 
 function LogSleepScreen({ navigation }) {
     const [hours, setHours] = useState();
     const [loading, setLoading] = useState(false);
     const date = new Date().toLocaleDateString();
-    const docRef = doc(db, "sleepTracker", auth.currentUser.uid);
+    const docRef = doc(db, "dataTracker", auth.currentUser.uid);
 
     const addData = async () => {
         if (hours == "")
-            alert("Your group needs a name!");
+            alert("Make sure to fill out the form!");
         else {
             setLoading(true);
             try {
                 const snapshot = await getDoc(docRef);
+                let toLog = { date: date, hours: parseFloat(hours) };
                 if (snapshot.exists()) {
                     const data = snapshot.data();
-                    const logs = data.logs;
-                    await updateDoc(docRef, { logs: [...logs, { date: date, hours: parseFloat(hours) }] });
+                    let dates = data.dates;
+                    const dateIndex = findCurrentDateIndex(dates);
+                    if (dateIndex != -1) {
+                        dates[dateIndex].sleepLog = toLog;
+                    } else {
+                        let newDate = cloneObject(blankDate);
+                        newDate.sleepLog = toLog;
+                        dates.push(newDate);
+                    }
+                    await updateDoc(docRef, { dates: dates });
                 } else {
-                    await setDoc(docRef, { logs: [{ date: date, hours: parseFloat(hours) }] });
+                    let newDate = cloneObject(blankDate);
+                    newDate.sleepLog = toLog;
+                    await setDoc(docRef, { dates: [newDate] });
                 }
 
                 navigation.goBack();
@@ -33,6 +45,19 @@ function LogSleepScreen({ navigation }) {
             }
             setLoading(false);
         }
+    }
+
+    const findCurrentDateIndex = (dates) => {
+        let ret = -1;
+        for (let i = 0; i < dates.length; i++) {
+            if (dates[i].date == date) {
+                ret = i;
+                break;
+            }
+        }
+
+        return ret;
+
     }
 
     const onlyNumbers = (text) => {

@@ -2,13 +2,14 @@ import { View, Text, TextInput, KeyboardAvoidingView, ActivityIndicator } from '
 import React, { useState } from 'react'
 import { globalStyles, globalStyleVariables } from '../../../../styles/styles';
 import { TouchableOpacity } from 'react-native';
-import { addDoc, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../../../../firebase/FirebaseConfig';
+import { blankCardioTypesList, blankWorkoutsDoc, cloneObject } from '../../../../data/DataStructures';
 
 function AddCardioTypeScreen({ navigation }) {
     const [typeName, setTypeName] = useState("");
     const [loading, setLoading] = useState(false);
-    const docRef = doc(db, "cardioTracker", auth.currentUser.uid);
+    const docRef = doc(db, "workouts", auth.currentUser.uid);
 
     const addData = async () => {
         if (typeName == "")
@@ -18,23 +19,29 @@ function AddCardioTypeScreen({ navigation }) {
             try {
                 const snapshot = await getDoc(docRef);
                 if (snapshot.exists()) {
-                    let types = snapshot.data().types;
-                    let nextId;
-                    if (types.length == 0) {
-                        nextId = 0;
+                    let types = snapshot.data().cardioTypes;
+                    if (types.length != 0) {
+                        let nextId = types[types.length - 1].id + 1;
+                        if (typeNameAlreadyExists(types)) {
+                            alert("Cardio type with that name already exists!");
+                        } else {
+                            let toLog = { name: typeName, id: nextId };
+                            types = [...types, toLog];
+                            await updateDoc(docRef, { cardioTypes: types });
+                            navigation.goBack();
+                        }
                     } else {
-                       nextId = types[types.length - 1].id + 1;
-                    }
-                    if (typeNameAlreadyExists(types)) {
-                        alert("Cardio type with that name already exists!")
-                    } else {
-                        let toLog = { name: typeName, id: nextId };
-                        types = [...types, toLog];
-                        await updateDoc(docRef, { types: types });
+                        let toLog = { name: typeName, id: 2 };
+                        let newList = [...blankCardioTypesList];
+                        newList.push(toLog);
+                        await updateDoc(docRef, { cardioTypes: newList });
                         navigation.goBack();
                     }
                 } else {
-                    await setDoc(docRef, {types: [{id: 1, name: "No Type"}, {id: 2, name: typeName}], sessions: []})
+                    let toLog = { name: typeName, id: 2 };
+                    let newDoc = cloneObject(blankWorkoutsDoc);
+                    newDoc.groups.push(toLog);
+                    await setDoc(docRef, newDoc)
                     navigation.goBack();
                 }
 

@@ -9,7 +9,7 @@ import { useFocusEffect } from '@react-navigation/native';
 function SleepHistoryScreen({ navigation }) {
     const [loading, setLoading] = useState(false);
     const [logs, setLogs] = useState([]);
-    const docRef = doc(db, "sleepTracker", auth.currentUser.uid);
+    const docRef = doc(db, "dataTracker", auth.currentUser.uid);
 
     useFocusEffect(
         useCallback(() => {
@@ -19,7 +19,7 @@ function SleepHistoryScreen({ navigation }) {
                     const snapshot = await getDoc(docRef);
                     if (snapshot.exists()) {
                         const data = snapshot.data();
-                        setLogs(data.logs);
+                        setLogs(combineLogs(data.dates));
                     }
                 } catch (error) {
                     alert("Failed to load sleep logs: " + error.message);
@@ -31,6 +31,18 @@ function SleepHistoryScreen({ navigation }) {
 
         }, [])
     )
+
+    const combineLogs = (dates) => {
+        let ret = [];
+
+        for (let i = 0; i < dates.length; i++) {
+            let log = dates[i].sleepLog;
+            if (log != null && log != undefined)
+                ret = [...ret, dates[i].sleepLog];
+        }
+
+        return ret;
+    }
 
     const listLogs = () => {
         if (logs.length == 0) {

@@ -5,6 +5,7 @@ import { useFocusEffect, useRoute } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../../../../firebase/FirebaseConfig';
+import { blankDate, cloneObject } from '../../../../data/DataStructures';
 
 function WorkoutGuide({ navigation }) {
     const route = useRoute();
@@ -14,7 +15,7 @@ function WorkoutGuide({ navigation }) {
 
     const [loading, setLoading] = useState(false);
 
-    const docRef = doc(db, "workoutTracker", auth.currentUser.uid);
+    const docRef = doc(db, "dataTracker", auth.currentUser.uid);
     const date = new Date().toLocaleDateString();
 
     useFocusEffect(
@@ -45,11 +46,22 @@ function WorkoutGuide({ navigation }) {
             const snapshot = await getDoc(docRef);
             if (snapshot.exists()) {
                 const data = snapshot.data();
-                const toLog = { sets: data.sets.concat(newSets) };
-                await updateDoc(docRef, toLog);
+                let dates = [...data.dates];
+                const dateIndex = findCurrentDateIndex(dates);
+                if (dateIndex != -1) {
+                    const appended = [...dates[dateIndex].sets, ...newSets];
+                    dates[dateIndex].sets = appended;
+                    await updateDoc(docRef, { dates: dates });
+                } else {
+                    let newDate = cloneObject(blankDate);
+                    newDate.sets = newSets;
+                    dates.push(newDate);
+                    await updateDoc(docRef, { dates: dates });
+                }
             } else {
-                const toLog = { sets: newSets };
-                await setDoc(docRef, toLog);
+                let newDate = cloneObject(blankDate);
+                newDate.sets = newSets;
+                await setDoc(docRef, { dates: [newDate] })
             }
 
             setLoading(false);
@@ -59,6 +71,19 @@ function WorkoutGuide({ navigation }) {
             alert("Failed to save workout: " + error.message);
             setLoading(false);
         }
+    }
+
+    const findCurrentDateIndex = (dates) => {
+        let ret = -1;
+        for (let i = 0; i < dates.length; i++) {
+            if (dates[i].date == date) {
+                ret = i;
+                break;
+            }
+        }
+
+        return ret;
+
     }
 
     const generateSetsJSON = () => {
