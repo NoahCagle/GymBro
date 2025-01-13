@@ -74,19 +74,15 @@ function WorkoutTracker(props) {
             return (<Text style={globalStyles.formText}>No workouts recorded yet!</Text>);
         return parsedData.dates.map((date, index) => {
             return (
-                <DateReviewListItem key={index} dateData={date} navigation={navigation}/>
+                <DateReviewListItem key={index} dateData={date} navigation={navigation} />
             )
         })
     }
 
     return (
-        <View>
-            <ScrollView>
-                <View>
-                    {returnBody()}
-                </View>
-            </ScrollView>
-        </View>
+        <ScrollView>
+            {returnBody()}
+        </ScrollView>
     )
 }
 
