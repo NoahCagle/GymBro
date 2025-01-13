@@ -10,7 +10,6 @@ function WeightTracker(props) {
     const [loading, setLoading] = useState(false);
     const [docExists, setDocExists] = useState(false);
     const navigation = props.navigation;
-    const embedded = props.embedded;
     const docRef = doc(db, "weightTracker", auth.currentUser.uid);
 
     // I don't know exactly how this hook works, but it's the only way I've been able to make sure the data displayed on-screen is up to date
@@ -63,22 +62,8 @@ function WeightTracker(props) {
             </ScrollView>
         )
     }
-
-    if (embedded)
-        return (
-            <View style={[globalStyles.formWrapper, { maxHeight: "45%" }]}>
-                {returnHeader()}
-                {returnBody()}
-                <View style={globalStyles.rowSpacingWrapper}>
-                    <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("WeightTracker")}>
-                        <Text style={globalStyles.buttonTitle}>Expand</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        )
-
     return (
-        <View style={globalStyles.container}>
+        <View>
             <View style={globalStyles.formWrapper}>
                 {returnHeader()}
                 {returnBody()}

@@ -9,8 +9,8 @@ function CardioListItem(props) {
     return (
         <View style={globalStyles.formWrapper}>
             <Text style={[globalStyles.formTitle, { textDecorationLine: 'underline' }]}>{headerPrefix + session.typeName}</Text>
-            <Text style={globalStyles.formText}>+ Went for {session.time} minutes</Text>
-            <Text style={globalStyles.formText}>+ Burned {session.caloriesBurned} calories</Text>
+            <Text style={globalStyles.formText}>- Went for {session.time} minutes</Text>
+            <Text style={globalStyles.formText}>- Burned {session.caloriesBurned} calories</Text>
         </View>
     )
 }

@@ -51,16 +51,15 @@ function SetsListItem(props) {
                 <Text style={[globalStyles.formSubtitle, { textDecorationLine: 'underline' }]}>Mathematical Analysis</Text>
                 <View style={globalStyles.rowSpacingWrapper}>
                     <Text style={globalStyles.formText}>Avg Reps: {averageReps(sessionData)} reps</Text>
-                    <Text style={globalStyles.formText}>Goal: {workoutData.reps} reps</Text>
-                </View>
-                <View style={globalStyles.rowSpacingWrapper}>
                     <Text style={globalStyles.formText}>Avg Weight: {averageWeight(sessionData)} lbs</Text>
-                    <Text style={globalStyles.formText}>Goal: {workoutData.weight} lbs</Text>
                 </View>
-                <Text style={[globalStyles.formSubtitle, { textDecorationLine: 'underline' }]}>Avg To Goal Difference</Text>
                 <View style={globalStyles.rowSpacingWrapper}>
-                    <Text style={globalStyles.formText}>Reps: {plusMinus(averageReps(sessionData) - workoutData.reps)} reps</Text>
-                    <Text style={globalStyles.formText}>Weight: {plusMinus(averageWeight(sessionData) - workoutData.weight)} lbs</Text>
+                    <Text style={globalStyles.formText}>Rep Goal: {workoutData.reps} reps</Text>
+                    <Text style={globalStyles.formText}>Weight Goal: {workoutData.weight} lbs</Text>
+                </View>
+                <View style={globalStyles.rowSpacingWrapper}>
+                    <Text style={globalStyles.formText}>Difference: {plusMinus(averageReps(sessionData) - workoutData.reps)} reps</Text>
+                    <Text style={globalStyles.formText}>Difference: {plusMinus(averageWeight(sessionData) - workoutData.weight)} lbs</Text>
                 </View>
 
                 <View style={globalStyles.rowSpacingWrapper}>

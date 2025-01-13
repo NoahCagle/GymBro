@@ -1,5 +1,5 @@
-import { View } from 'react-native'
-import React from 'react'
+import { Text, TouchableOpacity, View } from 'react-native'
+import React, { useState } from 'react'
 import { globalStyles } from '../../styles/styles';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import AddWeight from './subscreens/progress/AddWeight';
@@ -10,10 +10,38 @@ import DayBreakdown from './subscreens/progress/DayBreakdown';
 const Stack = createNativeStackNavigator();
 
 function ProgressTracker({ navigation }) {
+  const [currentScreen, setCurrentScreen] = useState(0);
+
+  const returnCurrentScreen = (screenId) => {
+    switch (screenId) {
+      case 0:
+        return (<WorkoutTracker navigation={navigation} />)
+      case 1:
+        return (<WeightTracker navigation={navigation} />);
+    }
+  }
+
+  const topTabBar = () => {
+    return (
+      <View style={globalStyles.rowSpacingWrapper}>
+        <TouchableOpacity onPress={() => setCurrentScreen(0)}>
+          <Text style={currentScreen == 0 ? globalStyles.screenTabSelected : globalStyles.screenTab}>Training Review</Text>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => setCurrentScreen(1)}>
+          <Text style={currentScreen == 1 ? globalStyles.screenTabSelected : globalStyles.screenTab}>Body Weight</Text>
+        </TouchableOpacity>
+      </View>
+    )
+  }
+
   return (
     <View style={globalStyles.container}>
-      <WorkoutTracker navigation={navigation} embedded={true} />
-      <WeightTracker navigation={navigation} embedded={true} />
+      {
+        topTabBar()
+      }
+      {
+        returnCurrentScreen(currentScreen)
+      }
     </View>
   )
 }

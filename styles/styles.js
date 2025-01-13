@@ -34,6 +34,16 @@ export const globalStyles = StyleSheet.create({
         fontStyle: 'italic',
         alignSelf: 'center',
     },
+    screenTab: {
+        color: globalStyleVariables.textColor,
+        fontSize: 24,
+    },
+    screenTabSelected: {
+        color: 'coral',
+        textDecorationLine: 'underline',
+        fontSize: 24,
+        fontWeight: 'bold'
+    },
     screenTitleCentered: {
         color: globalStyleVariables.textColor,
         fontSize: 24,

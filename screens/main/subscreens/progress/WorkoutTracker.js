@@ -5,10 +5,10 @@ import { doc, getDoc, updateDoc } from 'firebase/firestore';
 import { auth, db } from '../../../../firebase/FirebaseConfig';
 import { useFocusEffect } from '@react-navigation/native';
 import { TouchableOpacity } from 'react-native';
+import DateReviewListItem from '../../../../components/workouts/DateReviewListItem';
 
 function WorkoutTracker(props) {
     const navigation = props.navigation;
-    const embedded = props.embedded;
     const docRef = doc(db, "workoutTracker", auth.currentUser.uid);
     const [loading, setLoading] = useState(false);
     const [parsedData, setParsedData] = useState([]);
@@ -40,7 +40,7 @@ function WorkoutTracker(props) {
         }, [])
     )
 
-    // Separates raw data from the database into arrays based on each date found
+    // Organizes list of sets by their date
     const parseData = (sets) => {
         let parse = { dates: [] };
         const dateExists = (date) => {
@@ -72,62 +72,18 @@ function WorkoutTracker(props) {
             return (<ActivityIndicator size='large' color={globalStyleVariables.textColor} />);
         if (!docExists)
             return (<Text style={globalStyles.formText}>No workouts recorded yet!</Text>);
-        let ret = parsedData.dates.map((date, i) => {
+        return parsedData.dates.map((date, index) => {
             return (
-                <View key={i} style={{ marginVertical: 5 }}>
-                    <Text key={i} style={[globalStyles.formTitle, { textDecorationLine: "underline" }]}>{date.date}</Text>
-                    <View style={globalStyles.rowSpacingWrapper}>
-                        <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("DayBreakdown", { date: date })}>
-                            <Text style={globalStyles.buttonTitle}>Detailed Breakdown -{'>'}</Text>
-                        </TouchableOpacity>
-                    </View>
-                    {
-                        parsedData.dates[i].sets.map((set, j) => {
-                            return (<Text key={j} style={globalStyles.formText}>{set.name}: {set.reps} reps at {set.weight} lbs</Text>)
-                        })
-                    }
-                </View>
+                <DateReviewListItem key={index} dateData={date} navigation={navigation}/>
             )
         })
-        return ret;
     }
 
-    // If this component is embedded, include a button to navigate to the WorkoutTracker page. Otherwise, show only the screen title
-    const returnHeader = () => {
-        if (embedded)
-            return (
-                <Text style={globalStyles.formTitle}>Workout Tracker</Text>
-            )
-        return (<Text style={globalStyles.formTitle}>Workout Tracker</Text>);
-    }
-
-    // If embedded into ProgressTracker, return content only within a form limited to a height of 45%
-    if (embedded)
-        return (
-            <View style={[globalStyles.formWrapper, { maxHeight: '45%' }]}>
-                {returnHeader()}
-                <ScrollView>
-                    {returnBody()}
-                </ScrollView>
-                <View style={globalStyles.rowSpacingWrapper}>
-                    <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("WorkoutTracker")}>
-                        <Text style={globalStyles.buttonTitle}>Expand</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
-        )
-    // If not embedded, return a full page with a 'Back' button
     return (
-        <View style={globalStyles.container}>
+        <View>
             <ScrollView>
-                <View style={globalStyles.formWrapper}>
-                    {returnHeader()}
+                <View>
                     {returnBody()}
-                </View>
-                <View style={globalStyles.rowSpacingWrapper}>
-                    <TouchableOpacity style={globalStyles.button} onPress={() => navigation.goBack()}>
-                        <Text style={globalStyles.buttonTitle}>Go Back</Text>
-                    </TouchableOpacity>
                 </View>
             </ScrollView>
         </View>
