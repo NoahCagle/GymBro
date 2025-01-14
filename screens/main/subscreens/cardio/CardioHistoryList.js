@@ -1,7 +1,7 @@
 import { View, Text, ActivityIndicator } from 'react-native'
 import React, { useCallback, useState } from 'react'
 import { globalStyles, globalStyleVariables } from '../../../../styles/styles';
-import { FAB } from '@rneui/base';
+import { SpeedDial } from '@rneui/base';
 import { useFocusEffect } from '@react-navigation/native';
 import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../../../../firebase/FirebaseConfig';
@@ -10,6 +10,7 @@ import CardioListItem from '../../../../components/workouts/CardioListItem';
 function CardioHistoryList({ navigation }) {
     const [sessions, setSessions] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
     const docRef = doc(db, "dataTracker", auth.currentUser.uid);
 
     useFocusEffect(
@@ -20,7 +21,7 @@ function CardioHistoryList({ navigation }) {
                     const snapshot = await getDoc(docRef);
                     if (snapshot.exists()) {
                         const data = snapshot.data();
-                        setSessions(combineLogs(data.dates));
+                        setSessions(combineLogs(data.dates).reverse());
                     } else {
                         setSessions([]);
                     }
@@ -54,7 +55,7 @@ function CardioHistoryList({ navigation }) {
             return (
                 <View>
                     {
-                        sessions.reverse().map((session, index) => {
+                        sessions.map((session, index) => {
                             return (
                                 <CardioListItem key={index} session={session} headerPrefix={session.date + ": "} />
                             )
@@ -69,17 +70,40 @@ function CardioHistoryList({ navigation }) {
         <View style={globalStyles.container}>
             <Text style={globalStyles.screenTitle}>Cardio History</Text>
 
-            {loading ? (<ActivityIndicator size='large' color={globalStyleVariables.textColor} />) :
-                listSessions()
+            {
+                loading ? (<ActivityIndicator size='large' color={globalStyleVariables.textColor} />) :
+                    listSessions()
             }
 
-            <FAB
-                visible={true}
-                placement='right'
-                title={"+   Log Cardio"}
+            <SpeedDial
+                isOpen={menuOpen}
+                icon={{ name: 'edit', color: '#fff' }}
+                openIcon={{ name: 'close', color: '#fff' }}
+                onOpen={() => setMenuOpen(!menuOpen)}
+                onClose={() => setMenuOpen(!menuOpen)}
                 color={globalStyleVariables.fabColor}
-                onPress={() => navigation.navigate("Log Cardio")}
-            />
+                overlayColor={globalStyleVariables.transparent}
+                labelPressable={true}
+            >
+                <SpeedDial.Action
+                    icon={{ name: 'add', color: '#fff' }}
+                    title="Log Cardio"
+                    color={globalStyleVariables.fabColor}
+                    onPress={() => {
+                        setMenuOpen(false);
+                        navigation.navigate("LogCardio");
+                    }}
+                />
+                <SpeedDial.Action
+                    icon={{ name: 'add', color: '#fff' }}
+                    title="Create Cardio Type"
+                    color={globalStyleVariables.fabColor}
+                    onPress={() => {
+                        setMenuOpen(false);
+                        navigation.navigate("AddCardioType");
+                    }}
+                />
+            </SpeedDial>
 
         </View>
     )

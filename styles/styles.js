@@ -7,6 +7,7 @@ export const globalStyleVariables = {
     fabColor: '#223333',
     buttonColor: '#223333',
     outlineColor: '#334444',
+    transparent: `rgba(255, 255, 255, 0)`
 }
 
 export default function ImageLogo(props) {

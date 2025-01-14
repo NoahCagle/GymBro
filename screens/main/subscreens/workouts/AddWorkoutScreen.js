@@ -118,6 +118,9 @@ function AddWorkoutScreen({ navigation }) {
                             }
                         </Picker>
                     </View>
+                    <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("AddGroup")}>
+                        <Text style={[globalStyles.buttonTitle, { alignSelf: 'center' }]}>Create New Group</Text>
+                    </TouchableOpacity>
                     {loading ? (<ActivityIndicator size='large' color={globalStyleVariables.textColor} />) :
                         (
                             <View style={globalStyles.rowSpacingWrapper}>

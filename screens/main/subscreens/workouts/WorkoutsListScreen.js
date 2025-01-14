@@ -1,6 +1,5 @@
 import { View, ScrollView, ActivityIndicator, Text } from 'react-native'
 import React, { useCallback, useState } from 'react'
-import { FAB } from '@rneui/themed'
 import { useFocusEffect } from '@react-navigation/native'
 import { doc, getDoc, updateDoc } from 'firebase/firestore'
 import { globalStyles, globalStyleVariables } from '../../../../styles/styles'
@@ -8,12 +7,14 @@ import WorkoutListItem from '../../../../components/workouts/WorkoutListItem'
 import { auth, db } from '../../../../firebase/FirebaseConfig'
 import Collapsible from 'react-native-collapsible'
 import { TouchableOpacity } from 'react-native'
+import { SpeedDial } from '@rneui/base'
 
 function WorkoutsListScreen({ navigation }) {
     const [loading, setLoading] = useState(false);
     const [workouts, setWorkouts] = useState([]);
     const [docExists, setDocExists] = useState(false);
     const [workoutsByGroup, setWorkoutsByGroup] = useState([]);
+    const [menuOpen, setMenuOpen] = useState(false);
     const docRef = doc(db, "workouts", auth.currentUser.uid);
 
     useFocusEffect(
@@ -112,20 +113,36 @@ function WorkoutsListScreen({ navigation }) {
                             : (<Text style={globalStyles.formText}>No workouts added yet!</Text>)
                 }
             </ScrollView>
-            <FAB
-                visible={true}
-                placement='right'
-                title={"+   Add Workout"}
+
+            <SpeedDial
+                isOpen={menuOpen}
+                icon={{ name: 'edit', color: '#fff' }}
+                openIcon={{ name: 'close', color: '#fff' }}
+                onOpen={() => setMenuOpen(!menuOpen)}
+                onClose={() => setMenuOpen(!menuOpen)}
                 color={globalStyleVariables.fabColor}
-                onPress={() => navigation.navigate("AddWorkout")}
-            />
-            <FAB
-                visible={true}
-                placement='left'
-                title={"+   Create Group"}
-                color={globalStyleVariables.fabColor}
-                onPress={() => navigation.navigate("AddGroup")}
-            />
+                overlayColor={globalStyleVariables.transparent}
+                labelPressable={true}
+            >
+                <SpeedDial.Action
+                    icon={{ name: 'add', color: '#fff' }}
+                    title="Create Workout"
+                    color={globalStyleVariables.fabColor}
+                    onPress={() => {
+                        setMenuOpen(false);
+                        navigation.navigate("AddWorkout")
+                    }}
+                />
+                <SpeedDial.Action
+                    icon={{ name: 'add', color: '#fff' }}
+                    title="Create Group"
+                    color={globalStyleVariables.fabColor}
+                    onPress={() => {
+                        setMenuOpen(false);
+                        navigation.navigate("AddGroup")
+                    }}
+                />
+            </SpeedDial>
         </View>
     )
 }

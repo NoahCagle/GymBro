@@ -8,7 +8,7 @@ import { Picker } from '@react-native-picker/picker';
 import { useFocusEffect } from '@react-navigation/native';
 import { blankDate, cloneObject } from '../../../../data/DataStructures';
 
-function LogCardio({ navigation }) {
+function LogCardioScreen({ navigation }) {
     const [type, setType] = useState(1);
     const [time, setTime] = useState("");
     const [caloriesBurned, setCaloriesBurned] = useState("");
@@ -135,8 +135,8 @@ function LogCardio({ navigation }) {
                             }
                         </Picker>
                     </View>
-                    <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("Add Cardio Type")}>
-                        <Text style={[globalStyles.buttonTitle, { alignSelf: 'center' }]}>Create Cardio Type</Text>
+                    <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("AddCardioType")}>
+                        <Text style={[globalStyles.buttonTitle, { alignSelf: 'center' }]}>Create New Cardio Type</Text>
                     </TouchableOpacity>
                     <TextInput style={globalStyles.textInput} placeholder="Time (minutes)" placeholderTextColor={globalStyleVariables.outlineColor} value={time} onChangeText={(text) => setTime(onlyNumbers(text))} />
                     <TextInput style={globalStyles.textInput} placeholder="Calories Burned" placeholderTextColor={globalStyleVariables.outlineColor} value={caloriesBurned} onChangeText={(text) => setCaloriesBurned(onlyNumbers(text))} />
@@ -158,4 +158,4 @@ function LogCardio({ navigation }) {
     )
 }
 
-export default LogCardio;
+export default LogCardioScreen;
