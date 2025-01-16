@@ -16,6 +16,7 @@ import SleepTrackerNavigator from './screens/main/SleepTrackerNavigator';
 import * as SecureStore from 'expo-secure-store';
 import { blankWorkoutsDoc } from './data/DataStructures';
 import DataTransfer from './screens/main/DataTransfer';
+import CalendarView from './screens/main/subscreens/progress/calendar/CalendarView';
 
 const Drawer = createDrawerNavigator();
 const CoreStack = createNativeStackNavigator();
@@ -57,6 +58,7 @@ function Authenticated() {
         {/* <Drawer.Screen name="Soreness Tracker" component={SorenessTrackerNavigator} options={globalStyles.drawerStyles.mainScreenOptions} /> */}
         <Drawer.Screen name="Sleep Tracker" component={SleepTrackerNavigator} options={globalStyles.drawerStyles.mainScreenOptions} />
         {/* <Drawer.Screen name="Data Transfer" component={DataTransfer} options={globalStyles.drawerStyles.mainScreenOptions} /> */}
+        <Drawer.Screen name="Calendar" component={CalendarView} options={globalStyles.drawerStyles.mainScreenOptions} />
       </Drawer.Navigator>
     </View>
   )

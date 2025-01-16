@@ -56,7 +56,7 @@ function AddWorkoutScreen({ navigation }) {
                     } else {
                         let nextId;
                         if (workouts.length > 0)
-                            nextId = workouts[workouts.length - 1] + 1;
+                            nextId = workouts[workouts.length - 1].id + 1;
                         else nextId = 0;
                         let toLog = { name: wkoutName, weight: parseFloat(weight), sets: parseFloat(sets), reps: parseFloat(reps), group: group, id: nextId };
                         workouts = [...workouts, toLog];
