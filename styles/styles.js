@@ -14,7 +14,7 @@ export default function ImageLogo(props) {
     const w = props.width;
     const h = props.height;
     return (
-        <Image style={{width: w, height: h, alignSelf: 'center'}} source={require('../assets/logo.png')}/>
+        <Image style={{ width: w, height: h, alignSelf: 'center' }} source={require('../assets/logo.png')} />
     )
 }
 

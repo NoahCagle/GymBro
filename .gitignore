@@ -37,4 +37,3 @@ yarn-error.*
 /android
 firebase/FirebaseConfig.js
 screens/main/DataTransfer.js
-screens/main/subscreens/progress/calendar/CalendarView.js
