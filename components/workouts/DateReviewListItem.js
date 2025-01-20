@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
 import { globalStyles, globalStyleVariables } from '../../styles/styles';
 import Collapsible from 'react-native-collapsible';
+import { fullDateName } from '../calendar/DateFormatting';
 
 function DateReviewListItem(props) {
     const dateData = props.dateData;
@@ -52,36 +53,35 @@ function DateReviewListItem(props) {
     const organizedSets = separateSets();
 
     return (
-        <>
+        <View style={globalStyles.formWrapper}>
+        <Text style={globalStyles.formTitle}>{fullDateName(dateData.date)}</Text>
             <View style={globalStyles.rowSpacingWrapper}>
                 <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("DayBreakdown", { date: dateData, organizedSets: organizedSets })}>
                     <Text style={globalStyles.buttonTitle}>Complete Breakdown</Text>
                 </TouchableOpacity>
             </View>
-            <View style={globalStyles.formWrapper}>
-                {
-                    showSleepLog()
-                }
-                {
-                    showBodyWeightLog()
-                }
-                {
-                    organizedSets.map((workout, index) => {
-                        return (
-                            <CollapsibleSetList key={index} data={workout} />
-                        )
-                    })
-                }
-                {
-                    dateData.cardioLogs.map((session, index) => {
-                        return (
-                            <CollapsibleCardioItem key={index} data={session} />
-                        )
-                    })
-                }
+            {
+                showSleepLog()
+            }
+            {
+                showBodyWeightLog()
+            }
+            {
+                organizedSets.map((workout, index) => {
+                    return (
+                        <CollapsibleSetList key={index} data={workout} />
+                    )
+                })
+            }
+            {
+                dateData.cardioLogs.map((session, index) => {
+                    return (
+                        <CollapsibleCardioItem key={index} data={session} />
+                    )
+                })
+            }
 
-            </View>
-        </>
+        </View>
     )
 }
 

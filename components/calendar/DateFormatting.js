@@ -75,10 +75,28 @@ function getDayName(day) {
     }
 }
 
+// Converts number value to MM string
+// Example: 1 -> 01
+function numberToDD(num) {
+    let str = "" + num;
+    switch (str.length) {
+        case 1:
+            return '0' + str;
+        case 2:
+            return str;
+    }
+}
+
 // Split date formatted as mm/dd/year and returns value of mm as a number
 function parseMonth(date) {
     let split = date.split('/');
     return parseInt(split[0]);
+}
+
+// Split date formatted as mm/dd/year and returns value of dd as a number
+function parseDate(date) {
+    let split = date.split('/');
+    return parseInt(split[1]);
 }
 
 
@@ -88,4 +106,18 @@ function parseYear(date) {
     return parseInt(split[2]);
 }
 
-export { getMonthName, getDayName, getMaxDays, parseMonth, parseYear }
+function fullDateName(date) {
+    let month = getMonthName(parseMonth(date));
+    let day = parseDate(date);
+    let year = parseYear(date);
+    if (day % 10 == 1) {
+        day = day + 'st';
+    } else if (day % 10 == 2) {
+        day = day + 'nd';
+    } else if (day % 10 == 3) {
+        day = day + 'rd'
+    } else day = day + 'th';
+    return month + ' ' + day + ', ' + year
+}
+
+export { getMonthName, getDayName, getMaxDays, parseMonth, parseDate, parseYear, numberToDD, fullDateName }

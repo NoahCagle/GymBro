@@ -42,38 +42,19 @@ function WorkoutTracker(props) {
     const returnHeader = () => {
         if (!loading)
             return (
-                <View style={globalStyles.rowSpacingWrapper}>
-
-                    <TouchableOpacity onPress={() => {
-                        setOpenDateIndex(dates.length - 1);
-                    }}>
-                        <Text style={globalStyles.screenTitleCentered}>{"◄◄"}</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={() => {
-                        if (openDateIndex < (dates.length - 1)) setOpenDateIndex(openDateIndex + 1);
-                    }}>
-                        <Text style={globalStyles.screenTitleCentered}>{"◄"}</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity>
-                        <Text style={globalStyles.screenTitleCentered}>{dates[openDateIndex].date}</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={() => {
-                        if (openDateIndex >= 1) setOpenDateIndex(openDateIndex - 1);
-                    }}>
-                        <Text style={globalStyles.screenTitleCentered}>{"►"}</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity onPress={() => {
-                        setOpenDateIndex(0);
-                    }}>
-                        <Text style={globalStyles.screenTitleCentered}>{"►►"}</Text>
-                    </TouchableOpacity>
-
-                </View>
+                <></>
             )
+    }
+
+    const findDateIndex = (date) => {
+        for (let i = 0; i < dates.length; i++) {
+            if (dates[i].date == date.toLocaleDateString()) return i;
+        }
+        return -1;
+    }
+
+    const dateSelected = (date) => {
+        setOpenDateIndex(findDateIndex(date));
     }
 
     const returnBody = () => {
@@ -85,7 +66,7 @@ function WorkoutTracker(props) {
             return (
                 <>
                     {returnHeader()}
-                    <CalendarView month={parseMonth(dates[openDateIndex].date)} year={parseYear(dates[openDateIndex].date)} />
+                    <CalendarView selectedDate={dates[openDateIndex].date} dates={dates} selectAction={(date) => dateSelected(date)} />
                     <DateReviewListItem dateData={dates[openDateIndex]} navigation={navigation} />
                 </>
             )
