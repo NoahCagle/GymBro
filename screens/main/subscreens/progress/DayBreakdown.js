@@ -50,6 +50,7 @@ function DayBreakdown({ navigation }) {
         return (
             <View style={{ marginVertical: 5 }}>
                 <Text style={globalStyles.screenSubtitle}>{date.sleepLog == null ? "No sleep data recorded for this date" : "Running on " + date.sleepLog.hours + " hours of sleep"}</Text>
+                <Text style={globalStyles.screenSubtitle}>{date.bodyWeightLogs.length == 0 ? "No weigh-in recorded for this date" : "Weighed in at " + date.bodyWeightLogs[0].weight + " lbs"}</Text>
                 {
                     organizedSets.map((wkout, index) => {
                         const workoutObj = getWorkoutById(wkout.workoutId);

@@ -1,10 +1,12 @@
 import { View, Text, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native'
 import React, { useCallback, useState } from 'react'
 import { globalStyles, globalStyleVariables } from '../../../../styles/styles';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { doc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../../../../firebase/FirebaseConfig';
 import { useFocusEffect } from '@react-navigation/native';
 import DateReviewListItem from '../../../../components/workouts/DateReviewListItem';
+import CalendarView from '../../../../components/calendar/CalendarView';
+import { parseMonth, parseYear } from '../../../../components/calendar/DateFormatting';
 
 function WorkoutTracker(props) {
     const navigation = props.navigation;
@@ -83,6 +85,7 @@ function WorkoutTracker(props) {
             return (
                 <>
                     {returnHeader()}
+                    <CalendarView month={parseMonth(dates[openDateIndex].date)} year={parseYear(dates[openDateIndex].date)} />
                     <DateReviewListItem dateData={dates[openDateIndex]} navigation={navigation} />
                 </>
             )
