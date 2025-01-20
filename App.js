@@ -58,7 +58,7 @@ function Authenticated() {
         {/* <Drawer.Screen name="Soreness Tracker" component={SorenessTrackerNavigator} options={globalStyles.drawerStyles.mainScreenOptions} /> */}
         <Drawer.Screen name="Sleep Tracker" component={SleepTrackerNavigator} options={globalStyles.drawerStyles.mainScreenOptions} />
         {/* <Drawer.Screen name="Data Transfer" component={DataTransfer} options={globalStyles.drawerStyles.mainScreenOptions} /> */}
-        <Drawer.Screen name="Calendar" component={CalendarView} options={globalStyles.drawerStyles.mainScreenOptions} />
+        {/* <Drawer.Screen name="Calendar" component={CalendarView} options={globalStyles.drawerStyles.mainScreenOptions} /> */}
       </Drawer.Navigator>
     </View>
   )

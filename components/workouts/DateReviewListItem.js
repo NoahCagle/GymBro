@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity } from 'react-native'
 import React, { useState } from 'react'
-import { globalStyles } from '../../styles/styles';
+import { globalStyles, globalStyleVariables } from '../../styles/styles';
 import Collapsible from 'react-native-collapsible';
 
 function DateReviewListItem(props) {
@@ -31,31 +31,57 @@ function DateReviewListItem(props) {
 
     }
 
+    const showSleepLog = () => {
+        if (dateData.sleepLog != null)
+            return (
+                <View style={globalStyles.collapsibleWrapper}>
+                    <Text style={[globalStyles.formSubtitle, { textAlign: 'left', alignSelf: 'left' }]}> - Logged {dateData.sleepLog.hours} hours of sleep</Text>
+                </View>
+            )
+    }
+
+    const showBodyWeightLog = () => {
+        if (dateData.bodyWeightLogs.length != 0)
+            return (
+                <View style={globalStyles.collapsibleWrapper}>
+                    <Text style={[globalStyles.formSubtitle, { textAlign: 'left', alignSelf: 'left' }]}>- Weighed in at {dateData.bodyWeightLogs[0].weight} lbs</Text>
+                </View>
+            )
+    }
+
     const organizedSets = separateSets();
 
     return (
-        <View style={globalStyles.formWrapper}>
-            <Text style={[globalStyles.formTitle, { textDecorationLine: 'underline' }]}>{dateData.date}</Text>
+        <>
             <View style={globalStyles.rowSpacingWrapper}>
                 <TouchableOpacity style={globalStyles.button} onPress={() => navigation.navigate("DayBreakdown", { date: dateData, organizedSets: organizedSets })}>
                     <Text style={globalStyles.buttonTitle}>Complete Breakdown</Text>
                 </TouchableOpacity>
             </View>
-            {
-                organizedSets.map((workout, index) => {
-                    return (
-                        <CollapsibleSetList key={index} data={workout} />
-                    )
-                })
-            }
-            {
-                dateData.cardioLogs.map((session, index) => {
-                    return (
-                        <CollapsibleCardioItem key={index} data={session} />
-                    )
-                })
-            }
-        </View>
+            <View style={globalStyles.formWrapper}>
+                {
+                    showSleepLog()
+                }
+                {
+                    showBodyWeightLog()
+                }
+                {
+                    organizedSets.map((workout, index) => {
+                        return (
+                            <CollapsibleSetList key={index} data={workout} />
+                        )
+                    })
+                }
+                {
+                    dateData.cardioLogs.map((session, index) => {
+                        return (
+                            <CollapsibleCardioItem key={index} data={session} />
+                        )
+                    })
+                }
+
+            </View>
+        </>
     )
 }
 

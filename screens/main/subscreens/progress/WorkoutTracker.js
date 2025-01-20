@@ -1,4 +1,4 @@
-import { View, Text, ActivityIndicator, ScrollView } from 'react-native'
+import { View, Text, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native'
 import React, { useCallback, useState } from 'react'
 import { globalStyles, globalStyleVariables } from '../../../../styles/styles';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
@@ -11,6 +11,7 @@ function WorkoutTracker(props) {
     const docRef = doc(db, "dataTracker", auth.currentUser.uid);
     const [loading, setLoading] = useState(false);
     const [dates, setDates] = useState([]);
+    const [openDateIndex, setOpenDateIndex] = useState(0);
 
     useFocusEffect(
         useCallback(() => {
@@ -21,7 +22,7 @@ function WorkoutTracker(props) {
                     const snapshot = await getDoc(docRef);
                     if (snapshot.exists()) {
                         const data = snapshot.data();
-                        setDates(data.dates);
+                        setDates(data.dates.reverse());
                     } else {
                         setDates([]);
                     }
@@ -36,18 +37,62 @@ function WorkoutTracker(props) {
         }, [])
     )
 
+    const returnHeader = () => {
+        if (!loading)
+            return (
+                <View style={globalStyles.rowSpacingWrapper}>
+
+                    <TouchableOpacity onPress={() => {
+                        setOpenDateIndex(dates.length - 1);
+                    }}>
+                        <Text style={globalStyles.screenTitleCentered}>{"◄◄"}</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => {
+                        if (openDateIndex < (dates.length - 1)) setOpenDateIndex(openDateIndex + 1);
+                    }}>
+                        <Text style={globalStyles.screenTitleCentered}>{"◄"}</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity>
+                        <Text style={globalStyles.screenTitleCentered}>{dates[openDateIndex].date}</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => {
+                        if (openDateIndex >= 1) setOpenDateIndex(openDateIndex - 1);
+                    }}>
+                        <Text style={globalStyles.screenTitleCentered}>{"►"}</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity onPress={() => {
+                        setOpenDateIndex(0);
+                    }}>
+                        <Text style={globalStyles.screenTitleCentered}>{"►►"}</Text>
+                    </TouchableOpacity>
+
+                </View>
+            )
+    }
+
     const returnBody = () => {
         if (loading)
             return (<ActivityIndicator size='large' color={globalStyleVariables.textColor} />);
         if (dates.length == 0)
-            return (<Text style={globalStyles.formText}>No workouts recorded yet!</Text>);
-        return dates.reverse().map((date, index) => {
-            if (date.sets.length > 0 || date.cardioLogs.length > 0) {
-                return (
-                    <DateReviewListItem key={index} dateData={date} navigation={navigation} />
-                )
-            }
-        })
+            return (<Text style={globalStyles.formText}>No training recorded yet!</Text>);
+        if (dates != undefined)
+            return (
+                <>
+                    {returnHeader()}
+                    <DateReviewListItem dateData={dates[openDateIndex]} navigation={navigation} />
+                </>
+            )
+        // return dates.map((date, index) => {
+        //     if (date.sets.length > 0 || date.cardioLogs.length > 0) {
+        //         return (
+        //             <DateReviewListItem key={index} dateData={date} navigation={navigation} />
+        //         )
+        //     }
+        // })
     }
 
     return (
