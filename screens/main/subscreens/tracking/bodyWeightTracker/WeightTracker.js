@@ -1,8 +1,8 @@
 import { View, Text, TouchableOpacity, ActivityIndicator, ScrollView, Dimensions } from 'react-native'
 import React, { useCallback, useState } from 'react'
-import { globalStyles, globalStyleVariables } from '../../../../styles/styles';
+import { globalStyles, globalStyleVariables } from '../../../../../styles/styles';
 import { doc, getDoc } from 'firebase/firestore';
-import { auth, db } from '../../../../firebase/FirebaseConfig';
+import { auth, db } from '../../../../../firebase/FirebaseConfig';
 import { useFocusEffect } from '@react-navigation/native';
 import { LineChart } from 'react-native-chart-kit';
 
@@ -155,7 +155,8 @@ function WeightTracker(props) {
     }
 
     return (
-        <ScrollView>
+        <ScrollView style={globalStyles.container}>
+            <Text style={globalStyles.screenTitleCentered}>Body Weight Tracker</Text>
             {returnChart()}
             {returnBody()}
         </ScrollView>

@@ -1,49 +1,51 @@
 import { View, Text, TextInput, KeyboardAvoidingView, ActivityIndicator } from 'react-native'
 import React, { useState } from 'react'
-import { globalStyles, globalStyleVariables } from '../../../../styles/styles';
+import { globalStyles, globalStyleVariables } from '../../../../../styles/styles';
 import { TouchableOpacity } from 'react-native';
 import { doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-import { auth, db } from '../../../../firebase/FirebaseConfig';
-import { blankDate, cloneObject } from '../../../../data/DataStructures';
+import { auth, db } from '../../../../../firebase/FirebaseConfig';
+import { blankDate, cloneObject } from '../../../../../data/DataStructures';
 
-function LogSleepScreen({ navigation }) {
-    const [hours, setHours] = useState();
+function AddWeight({ navigation }) {
+    const [weight, setWeight] = useState("");
     const [loading, setLoading] = useState(false);
     const date = new Date().toLocaleDateString();
     const docRef = doc(db, "dataTracker", auth.currentUser.uid);
 
     const addData = async () => {
-        if (hours == "")
-            alert("Make sure to fill out the form!");
+        if (weight == "") alert("Your weight field is empty!");
         else {
             setLoading(true);
+            let toLog = { weight: parseFloat(weight), date: date };
             try {
                 const snapshot = await getDoc(docRef);
-                let toLog = { date: date, hours: parseFloat(hours) };
                 if (snapshot.exists()) {
                     const data = snapshot.data();
                     let dates = data.dates;
                     const dateIndex = findCurrentDateIndex(dates);
+
                     if (dateIndex != -1) {
-                        dates[dateIndex].sleepLog = toLog;
+                        dates[dateIndex].bodyWeightLogs.push(toLog);
+                        await updateDoc(docRef, { dates: dates });
+                        navigation.goBack();
                     } else {
                         let newDate = cloneObject(blankDate);
-                        newDate.sleepLog = toLog;
+                        newDate.bodyWeightLogs.push(toLog);
                         dates.push(newDate);
+                        await updateDoc(docRef, { dates: dates });
+                        navigation.goBack();
                     }
-                    await updateDoc(docRef, { dates: dates });
                 } else {
                     let newDate = cloneObject(blankDate);
-                    newDate.sleepLog = toLog;
+                    newDate.bodyWeightLogs.push(toLog);
                     await setDoc(docRef, { dates: [newDate] });
+                    navigation.goBack();
                 }
-
-                navigation.goBack();
 
             } catch (error) {
                 alert(error.message);
+                setLoading(false);
             }
-            setLoading(false);
         }
     }
 
@@ -69,15 +71,15 @@ function LogSleepScreen({ navigation }) {
     return (
         <View style={globalStyles.container}>
             <KeyboardAvoidingView>
-                <Text style={globalStyles.screenTitle}>Log Sleep</Text>
-                <Text style={globalStyles.screenSubtitle}>Logging sleep for {date}</Text>
+                <Text style={globalStyles.screenTitle}>Add Weigh-In</Text>
+                <Text style={globalStyles.screenSubtitle}>Add your weight for {date}</Text>
                 <View style={globalStyles.formWrapper}>
-                    <TextInput style={globalStyles.textInput} placeholder="Hours of sleep" placeholderTextColor={globalStyleVariables.outlineColor} autoCapitalize={"words"} value={hours} onChangeText={(text) => setHours(onlyNumbers(text))} />
+                    <TextInput style={globalStyles.textInput} placeholder="Weight (lbs)" placeholderTextColor={globalStyleVariables.outlineColor} value={weight} onChangeText={(text) => setWeight(onlyNumbers(text))} />
                     {loading ? (<ActivityIndicator size='large' color={globalStyleVariables.textColor} />) :
                         (
                             <View style={globalStyles.rowSpacingWrapper}>
                                 <TouchableOpacity style={globalStyles.button} onPress={() => addData()}>
-                                    <Text style={globalStyles.buttonTitle}>Log Sleep</Text>
+                                    <Text style={globalStyles.buttonTitle}>Log Weight</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={globalStyles.button} onPress={() => navigation.goBack()}>
                                     <Text style={globalStyles.buttonTitle}>Cancel</Text>
@@ -91,4 +93,4 @@ function LogSleepScreen({ navigation }) {
     )
 }
 
-export default LogSleepScreen;
+export default AddWeight;

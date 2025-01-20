@@ -1,12 +1,12 @@
 import { View, Text, ScrollView, ActivityIndicator } from 'react-native'
 import React, { useCallback, useState } from 'react'
-import { globalStyles, globalStyleVariables } from '../../../../styles/styles';
+import { globalStyles, globalStyleVariables } from '../../../../../styles/styles';
 import { TouchableOpacity } from 'react-native';
 import { useFocusEffect, useRoute } from '@react-navigation/native';
-import { auth, db } from '../../../../firebase/FirebaseConfig';
+import { auth, db } from '../../../../../firebase/FirebaseConfig';
 import { doc, getDoc } from 'firebase/firestore';
-import SetsListItem from '../../../../components/workouts/SetsListItem';
-import CardioListItem from '../../../../components/workouts/CardioListItem';
+import SetsListItem from '../../../../../components/workouts/SetsListItem';
+import CardioListItem from '../../../../../components/workouts/CardioListItem';
 
 function DayBreakdown({ navigation }) {
     const route = useRoute();

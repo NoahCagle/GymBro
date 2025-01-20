@@ -36,4 +36,3 @@ yarn-error.*
 
 /android
 firebase/FirebaseConfig.js
-screens/main/DataTransfer.js

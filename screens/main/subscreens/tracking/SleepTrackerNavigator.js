@@ -1,9 +1,9 @@
 import { Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import { globalStyles } from '../../styles/styles'
+import { globalStyles } from '../../../../styles/styles'
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import SleepHistoryScreen from './subscreens/sleep/SleepHistoryScreen';
-import LogSleepScreen from './subscreens/sleep/LogSleepScreen';
+import SleepHistoryScreen from './sleepTracker/SleepHistoryScreen';
+import LogSleepScreen from './sleepTracker/LogSleepScreen';
 
 const Stack = createNativeStackNavigator();
 

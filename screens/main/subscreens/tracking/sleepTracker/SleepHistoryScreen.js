@@ -1,9 +1,9 @@
 import { View, Text, ActivityIndicator, ScrollView } from 'react-native'
 import React, { useCallback, useState } from 'react'
-import { globalStyles, globalStyleVariables } from '../../../../styles/styles';
+import { globalStyles, globalStyleVariables } from '../../../../../styles/styles';
 import { FAB } from '@rneui/base';
 import { doc, getDoc } from 'firebase/firestore';
-import { auth, db } from '../../../../firebase/FirebaseConfig';
+import { auth, db } from '../../../../../firebase/FirebaseConfig';
 import { useFocusEffect } from '@react-navigation/native';
 
 function SleepHistoryScreen({ navigation }) {
@@ -69,7 +69,7 @@ function SleepHistoryScreen({ navigation }) {
 
     return (
         <View style={globalStyles.container}>
-            <Text style={globalStyles.screenTitle}>Sleep Logs</Text>
+            <Text style={globalStyles.screenTitleCentered}>Sleep Tracker</Text>
 
             {
                 loading ? (<ActivityIndicator size='large' color={globalStyleVariables.textColor} />) : listLogs()

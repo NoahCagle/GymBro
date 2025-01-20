@@ -1,14 +1,13 @@
 import { View, Text, ActivityIndicator, ScrollView, TouchableOpacity } from 'react-native'
 import React, { useCallback, useState } from 'react'
-import { globalStyles, globalStyleVariables } from '../../../../styles/styles';
+import { globalStyles, globalStyleVariables } from '../../../../../styles/styles';
 import { doc, getDoc } from 'firebase/firestore';
-import { auth, db } from '../../../../firebase/FirebaseConfig';
+import { auth, db } from '../../../../../firebase/FirebaseConfig';
 import { useFocusEffect } from '@react-navigation/native';
-import DateReviewListItem from '../../../../components/workouts/DateReviewListItem';
-import CalendarView from '../../../../components/calendar/CalendarView';
-import { parseMonth, parseYear } from '../../../../components/calendar/DateFormatting';
+import DateReviewListItem from '../../../../../components/workouts/DateReviewListItem';
+import CalendarView from '../../../../../components/calendar/CalendarView';
 
-function WorkoutTracker(props) {
+function TrainingTracker(props) {
     const navigation = props.navigation;
     const docRef = doc(db, "dataTracker", auth.currentUser.uid);
     const [loading, setLoading] = useState(false);
@@ -42,7 +41,7 @@ function WorkoutTracker(props) {
     const returnHeader = () => {
         if (!loading)
             return (
-                <></>
+                <Text style={globalStyles.screenTitleCentered}>Training Tracker</Text>
             )
     }
 
@@ -70,20 +69,13 @@ function WorkoutTracker(props) {
                     <DateReviewListItem dateData={dates[openDateIndex]} navigation={navigation} />
                 </>
             )
-        // return dates.map((date, index) => {
-        //     if (date.sets.length > 0 || date.cardioLogs.length > 0) {
-        //         return (
-        //             <DateReviewListItem key={index} dateData={date} navigation={navigation} />
-        //         )
-        //     }
-        // })
     }
 
     return (
-        <ScrollView>
+        <ScrollView style={globalStyles.container}>
             {returnBody()}
         </ScrollView>
     )
 }
 
-export default WorkoutTracker;
+export default TrainingTracker;

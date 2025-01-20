@@ -1,21 +1,20 @@
 import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import { Button, Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { createDrawerNavigator, DrawerContentScrollView, DrawerItem, DrawerItemList } from '@react-navigation/drawer';
+import { Platform, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { createDrawerNavigator, DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import HomeNavigator from './screens/main/HomeNavigator';
 import WorkoutsNavigator from './screens/main/WorkoutsNavigator';
-import ProgressTrackerNavigator from './screens/main/ProgressTrackerNavigator';
 import ImageLogo, { globalStyles } from './styles/styles';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Authentication from './screens/authentication/Authentication';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
 import { auth } from './firebase/FirebaseConfig';
-import SorenessTrackerNavigator from './screens/main/SorenessTrackerNavigator';
 import CardioTrackerNavigator from './screens/main/CardioTrackerNavigator';
-import SleepTrackerNavigator from './screens/main/SleepTrackerNavigator';
+import SleepTrackerNavigator from './screens/main/subscreens/tracking/SleepTrackerNavigator';
 import * as SecureStore from 'expo-secure-store';
-import { blankWorkoutsDoc } from './data/DataStructures';
-import DataTransfer from './screens/main/DataTransfer';
+import TrainingTrackerNavigator from './screens/main/subscreens/tracking/TrainingTrackerNavigator';
+import WeightTrackerNavigator from './screens/main/subscreens/tracking/WeightTrackerNavigator';
+import TrackersNavigator from './screens/main/TrackersNavigator';
 
 const Drawer = createDrawerNavigator();
 const CoreStack = createNativeStackNavigator();
@@ -53,10 +52,7 @@ function Authenticated() {
         <Drawer.Screen name="Home" component={HomeNavigator} options={globalStyles.drawerStyles.mainScreenOptions} />
         <Drawer.Screen name="Workouts" component={WorkoutsNavigator} options={globalStyles.drawerStyles.mainScreenOptions} />
         <Drawer.Screen name="Cardio" component={CardioTrackerNavigator} options={globalStyles.drawerStyles.mainScreenOptions} />
-        <Drawer.Screen name="Progress Tracker" component={ProgressTrackerNavigator} options={globalStyles.drawerStyles.mainScreenOptions} />
-        {/* <Drawer.Screen name="Soreness Tracker" component={SorenessTrackerNavigator} options={globalStyles.drawerStyles.mainScreenOptions} /> */}
-        <Drawer.Screen name="Sleep Tracker" component={SleepTrackerNavigator} options={globalStyles.drawerStyles.mainScreenOptions} />
-        {/* <Drawer.Screen name="Data Transfer" component={DataTransfer} options={globalStyles.drawerStyles.mainScreenOptions} /> */}
+        <Drawer.Screen name="Trackers" component={TrackersNavigator} options={globalStyles.drawerStyles.mainScreenOptions} />
       </Drawer.Navigator>
     </View>
   )

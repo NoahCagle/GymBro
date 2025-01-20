@@ -22,7 +22,7 @@ export const globalStyles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: globalStyleVariables.bgColor,
-        padding: 20
+        padding: 20,
     },
     screenTitle: {
         color: globalStyleVariables.textColor,

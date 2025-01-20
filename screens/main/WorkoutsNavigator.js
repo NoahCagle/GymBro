@@ -5,7 +5,6 @@ import WorkoutGuide from './subscreens/workouts/WorkoutGuide'
 import EditWorkoutScreen from './subscreens/workouts/EditWorkoutScreen'
 import WorkoutsListScreen from './subscreens/workouts/WorkoutsListScreen'
 import AddGroupScreen from './subscreens/workouts/AddGroupScreen'
-import HistoricalReview from './subscreens/progress/HistoricalReview'
 
 const Stack = createNativeStackNavigator();
 
@@ -17,7 +16,6 @@ function WorkoutsNavigator() {
       <Stack.Screen name="EditWorkout" component={EditWorkoutScreen} options={{ headerShown: false }} />
       <Stack.Screen name="AddGroup" component={AddGroupScreen} options={{ headerShown: false }} />
       <Stack.Screen name="WorkoutGuide" component={WorkoutGuide} options={{ headerShown: false }} />
-      <Stack.Screen name="HistoricalReview" component={HistoricalReview} options={{ headerShown: false }} />
     </Stack.Navigator>
   )
 }
